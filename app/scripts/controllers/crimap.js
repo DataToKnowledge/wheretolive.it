@@ -8,7 +8,7 @@
  * Controller of the wheretoliveApp
  */
 angular.module('wheretoliveApp')
-    .controller('CrimapCtrl', ['$scope', 'Search','$http',
+    .controller('CrimapCtrl', ['$scope', 'Search','$http','$log',
         function ($scope, Search, $http){
             $scope.map = {
                 center: {
@@ -129,7 +129,12 @@ angular.module('wheretoliveApp')
             };
 
 
-
+	        /**
+	         * Funzione di callback per la gestione del trascinamento dello slider
+	         */
+	         $scope.updateTimeOfCrime = function(value){
+		         $log.debug(value);
+	         };
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
              Chiamata in news.html
@@ -139,7 +144,8 @@ angular.module('wheretoliveApp')
                 $scope.getLastCrimeNews();
                 //$scope.selection = $scope.crimesList;
 
-
-
+				//Set time slider Date objects
+	            $scope.minCrimeTimeObject = new Date();
+	            $scope.ActualtimeDateObject = new Date();
             };
         }]);
