@@ -32,7 +32,7 @@ angular.module('wheretoliveApp')
 		};
 		return {
 			template: "<div><span></span><span class='startTime'></span>" +
-					  "<input type='range' /><span></span><span class='endTime'></span>" +
+					  "<input class='time-slider-range-bar' type='range' /><span></span><span class='endTime'></span>" +
 			          "<div style='position: absolute' class='curTime'><span></span></div>" + "</div>",
 			restrict: 'E',
 			scope: {
