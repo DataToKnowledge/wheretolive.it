@@ -145,7 +145,7 @@ angular.module('wheretoliveApp')
                 //$scope.selection = $scope.crimesList;
 
 				//Set time slider Date objects
-	            $scope.minCrimeTimeObject = new Date('01/01/2014');
-	            $scope.ActualtimeDateObject = new Date();
+	            $scope.minCrimeTimeObject = new Date('01/01/2014').getTime();
+	            $scope.ActualtimeDateObject = new Date().getTime();
             };
         }]);

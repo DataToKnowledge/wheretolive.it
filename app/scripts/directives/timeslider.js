@@ -13,26 +13,26 @@ angular.module('wheretoliveApp')
 			var sd, startDate, startTime;
 			sd = new Date(value);
 			startDate = sd.toLocaleDateString();
-			startTime = sd.toLocaleTimeString();
-			return span.innerHTML = startDate + ':' + startTime;
+			//startTime = sd.toLocaleTimeString();
+			return span.innerHTML = startDate; //+ ':' + startTime;
 		};
 		updateEndTime = function(span, value) {
 			var ed, endDate, endTime;
 			ed = new Date(value);
 			endDate = ed.toLocaleDateString();
-			endTime = ed.toLocaleTimeString();
-			return span.innerHTML = endDate + ':' + endTime;
+			//endTime = ed.toLocaleTimeString();
+			return span.innerHTML = endDate; //+ ':' + endTime;
 		};
 		updateCurrentTime = function(span, value) {
 			var cd, curDate, curTime;
 			cd = new Date(value);
 			curDate = cd.toLocaleDateString();
 			curTime = cd.toLocaleTimeString();
-			return span.innerHTML = curDate + ':' + curTime;
+			return span.innerHTML = curDate; // + ':' + curTime;
 		};
 		return {
-			template: "<div><span>Start Time: </span><span class='startTime'></span>" +
-					  "<input type='range' /><span>End Time:</span><span class='endTime'></span>" +
+			template: "<div><span></span><span class='startTime'></span>" +
+					  "<input type='range' /><span></span><span class='endTime'></span>" +
 			          "<div style='position: absolute' class='curTime'><span></span></div>" + "</div>",
 			restrict: 'E',
 			scope: {
