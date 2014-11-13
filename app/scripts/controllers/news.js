@@ -69,8 +69,15 @@ angular.module('wheretoliveApp')
                 latitude: '41',
                 longitude: '16'
             },
-            zoom: 8
+            options: {
+                maxZoom: 15,
+                minZoom: 5
+            },
+            zoom: 8,
+            clusterOptions:{maxZoom: 10}
+
         };
+
 
         $scope.markersEvents = {
             click: function (gMarker, eventName, model) {
@@ -80,13 +87,12 @@ angular.module('wheretoliveApp')
                 //console.log("Sto cliccando " + model.id + "--" + model.title);
                 //alert("Model: event:" + eventName + "gMarker: " +gMarker+" "+ JSON.stringify(model));
                 var idNews = model.id.split("/")[0];
-               // console.log(idNews);
-
+                // console.log(idNews);
 
 
                 $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
                 $("#" + idNews).addClass("highlightPost");
-               // console.log(lastMarkerIdHighlight);
+                // console.log(lastMarkerIdHighlight);
 
                 // $('html,body, div.scrollit').animate({scrollTop:0},'slow')
 
@@ -111,6 +117,9 @@ angular.module('wheretoliveApp')
                     $scope.map = {
                         center: $scope.position.coords,
                         zoom: 8
+
+
+
                     };
 
                 });
@@ -126,13 +135,11 @@ angular.module('wheretoliveApp')
             Search.getLastNews($scope.querySize, from).then(function (data) {
                 $scope.newsArray = data.data.hits.hits;
                 $scope.results = data.data.hits.total;
-                //setDivResult();
-                //normalizeTagsSize($scope.newsArray);
                 console.log("News", $scope.newsArray);
-                setMarkersNews($scope.newsArray);
+                //setMarkersNews($scope.newsArray);
+                setMarketNewsFake($scope.newsArray);
 
 
-                //$scope.paginationRange = Pagination.range();
             });
         };
 
@@ -174,6 +181,34 @@ angular.module('wheretoliveApp')
                     count++;
                 }
             }
+            //console.log("Trovati "+count+ " markers");
+            $scope.markers = markers;
+        };
+
+
+        //per ogni news inserisco un marker con coordinate: lat=40.0952956, lon= 18.3695308
+        var setMarketNewsFake = function (jsonData) {
+            //creo l'array dei markers a partire dal json
+            var markers = new Array();
+            var count = 0;
+            for (var i = 0; i < jsonData.length; i++) {
+
+
+                // console.log("mi sa che qui non entro");
+                var newMarker = {
+                    id: jsonData[i]._id + "/" + count,
+                    latitude: parseFloat(40.0952956),
+                    longitude: parseFloat(18.3695308),
+                    showWindow: true,
+                    title: jsonData[i]._source.title
+                };
+
+
+                //console.log(newMarker.latitude + '--' + newMarker.longitude);
+                markers.push(newMarker);
+                count++;
+            }
+
             //console.log("Trovati "+count+ " markers");
             $scope.markers = markers;
         };
