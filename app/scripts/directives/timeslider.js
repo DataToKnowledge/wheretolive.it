@@ -31,9 +31,11 @@ angular.module('wheretoliveApp')
 			return span.innerHTML = curDate; // + ':' + curTime;
 		};
 		return {
-			template: "<div><span></span><span class='startTime'></span>" +
-					  "<input class='time-slider-range-bar' type='range' /><span></span><span class='endTime'></span>" +
-			          "<div style='position: absolute' class='curTime'><span></span></div>" + "</div>",
+			template: "<div class='time-slider-content'><span></span><span class='startTime'></span>" +
+					  "<span></span><span class='endTime'></span>"+
+					  "<input class='time-slider-range-bar' type='range' name='crime-time-slider' />" +
+			          "<div style='position: absolute' class='curTime'><span></span></div>" +
+				      "</div>",
 			restrict: 'E',
 			scope: {
 				min: '=',
@@ -59,7 +61,7 @@ angular.module('wheretoliveApp')
 					curPercentage = (curValue - scope.min) / (scope.max - scope.min);
 					curValueLocation = (rangeInput.clientWidth * curPercentage) + rangeInputOffset.left;
 					ctdElement = angular.element(curTimeDiv);
-					ctdElement.css('left', curValueLocation - curTimeDiv.clientWidth + 'px');
+					ctdElement.css('left', (curValueLocation - curTimeDiv.clientWidth) + 'px');
 					return ctdElement.css('top', rangeInput.clientHeight - curTimeDiv.clientHeight + 'px');
 				};
 				rangeInputElement.bind('change', function(event) {

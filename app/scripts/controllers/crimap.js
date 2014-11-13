@@ -131,9 +131,12 @@ angular.module('wheretoliveApp')
 
 	        /**
 	         * Funzione di callback per la gestione del trascinamento dello slider
+	         * @param value - tempo espresso in unix timestamp
 	         */
 	         $scope.updateTimeOfCrime = function(value){
-		         $log.debug(value);
+		         var actualDate = new Date(value);
+		         console.log(actualDate.toLocaleDateString());
+		         $scope.$apply(); //aggiorno i binding dello scope
 	         };
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
