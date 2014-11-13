@@ -61,8 +61,8 @@ angular.module('wheretoliveApp')
 					curPercentage = (curValue - scope.min) / (scope.max - scope.min);
 					curValueLocation = (rangeInput.clientWidth * curPercentage) + rangeInputOffset.left;
 					ctdElement = angular.element(curTimeDiv);
-					ctdElement.css('left', (curValueLocation - curTimeDiv.clientWidth) + 'px');
-					return ctdElement.css('top', rangeInput.clientHeight - curTimeDiv.clientHeight + 'px');
+					ctdElement.css('left', (curValueLocation - (curTimeDiv.clientWidth/10)) + 'px');
+					return ctdElement.css('top', rangeInput.clientHeight - (curTimeDiv.clientHeight + 4) + 'px');
 				};
 				rangeInputElement.bind('change', function(event) {
 					var curValue;
