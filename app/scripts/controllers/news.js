@@ -191,6 +191,7 @@ angular.module('wheretoliveApp')
             //creo l'array dei markers a partire dal json
             var markers = new Array();
             var count = 0;
+            /*
             for (var i = 0; i < jsonData.length; i++) {
                var diff = 0.0000001;
 
@@ -203,7 +204,7 @@ angular.module('wheretoliveApp')
 
 
             }
-
+*/
             markers= createMarkerWithOverlap(jsonData);
             //console.log("Trovati "+count+ " markers");
             $scope.markers = markers;
