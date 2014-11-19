@@ -130,13 +130,17 @@ angular.module('wheretoliveApp')
 
 
 	        /**
-	         * Funzione di callback per la gestione del trascinamento dello slider
-	         * @param value - tempo espresso in unix timestamp
+	         * Callback function to handle the timeslider
+	         * @param value - time expressed in unix timestamp
 	         */
 	         $scope.updateTimeOfCrime = function(value){
-		         var actualDate = new Date(value);
-		         console.log(actualDate.toLocaleDateString());
-		         $scope.$apply(); //aggiorno i binding dello scope
+		         var actualDate = new Date(value); //Oggetto Date contentente la data attuale
+             /*
+              * Qui va la logica per ricevere l'elenco dei crimini nello speicifico intervallo temporale
+               * e per aggiornare la mappa
+              */
+
+		         $scope.$apply(); //Update bindings
 	         };
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
@@ -148,7 +152,7 @@ angular.module('wheretoliveApp')
                 //$scope.selection = $scope.crimesList;
 
 				//Set time slider Date objects
-	            $scope.minCrimeTimeObject = new Date('01/01/2014').getTime();
-	            $scope.ActualtimeDateObject = new Date().getTime();
+	            $scope.minCrimeTimeObject = new Date('01/01/2014').getTime(); //time slider start date
+	            $scope.ActualtimeDateObject = new Date().getTime(); //time slider end date
             };
         }]);
