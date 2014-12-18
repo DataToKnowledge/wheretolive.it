@@ -70,8 +70,8 @@ angular.module('wheretoliveApp')
                 longitude: '16'
             },
             options: {
-                maxZoom: 15,
-                minZoom: 5
+                maxZoom: 17,
+                minZoom: 2
             },
             zoom: 8,
             clusterOptions:{maxZoom: 10}
@@ -191,27 +191,152 @@ angular.module('wheretoliveApp')
             //creo l'array dei markers a partire dal json
             var markers = new Array();
             var count = 0;
+            /*
             for (var i = 0; i < jsonData.length; i++) {
+               var diff = 0.0000001;
+
+                jsonData[i]._source.positions = new Array(2);
+                jsonData[i]._source.positions[0] = {"lat": 40.0952956 + diff,
+                    "lon": 18.3695308 + diff};
+                jsonData[i]._source.positions[1] = {"lat": 40.0952956 + diff,
+                    "lon": 18.3695308 + diff};
+                diff += 0.000001;
 
 
-                // console.log("mi sa che qui non entro");
-                var newMarker = {
-                    id: jsonData[i]._id + "/" + count,
-                    latitude: parseFloat(40.0952956),
-                    longitude: parseFloat(18.3695308),
-                    showWindow: true,
-                    title: jsonData[i]._source.title
-                };
-
-
-                //console.log(newMarker.latitude + '--' + newMarker.longitude);
-                markers.push(newMarker);
-                count++;
             }
-
+*/
+            markers= createMarkerWithOverlap(jsonData);
             //console.log("Trovati "+count+ " markers");
             $scope.markers = markers;
         };
+
+        /**
+         * Dato un array di coppie (lan, lon) return un map (K,V) dove K= lan e V= array di longitudini distinte
+         * @param array contiene un array di coppie (lan, lon)
+         */
+        var getMapMarkers = function (array) {
+            var mapLat = {};
+            for (var p = 0; p < array.length; p++) {
+                //arrotondo la corrente latitudine e longitudine alla 6 cifra decimale
+                var currentLat = array[p].lat.toFixed(5);
+                //Case1: mapLat[currentLat]==undefined => inserisco (currentLan->Array(currentLon)) in mapLat
+                //Case2: mapLat[currentLat]== array && array.contains(currentLon) => skip inserimento
+                //Case3: mapLat[currentLat]== array && !array.contains(currentLon) => aggiungi currentLon in array
+                var arrayLon = mapLat[currentLat];
+                if (arrayLon == undefined) {
+                    var currentLon = array[p].lon.toFixed(5);
+                    mapLat[currentLat] = new Array(currentLon);
+                } else if (arrayLon.indexOf(currentLon) == -1) {
+                    arrayLon.push(currentLon);
+                    mapLat[currentLat] = arrayLon;
+                }
+            }
+
+            return mapLat;
+        };
+
+        var createMarkerWithOverlap = function (jsonData) {
+            var marksRes = new Array();
+            var count = 0;
+            var min = 0.99999;
+            var max = 1.00001;
+
+            var mapMarkers = {};
+
+            for (var i = 0; i < jsonData.length; i++) {
+
+                var mapCurrentNews = getMapMarkers(jsonData[i]._source.positions);
+                var keysMapCurrentNews = Object.keys(mapCurrentNews);
+                console.log("***News numero " + i + " di " + jsonData.length + "***");
+                for (var k = 0; k < keysMapCurrentNews.length; k++) {
+
+
+
+                    //Case1: mapMarkers[kLat]==undefined => inserisco (kLat->mapCurrentNews[kLat]) in mapMarkers
+                    //Case2: mapMarkers[kLat]== array perOgni e in mapCurrentNews[kLat] se:
+                    // 2.1 array.contains(e) inserisco un marker in posizione newLat= kLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
+                    //        ed aggiorno mapMarkers con newLat e newLon
+                    // 2.2 !array.contains(e) aggiorno mapMarkers[kLat], aggiungendo e
+
+                    var kLat = keysMapCurrentNews[k];
+                    var mapMarkArray = mapMarkers[kLat];
+                    var currentNewsLons = mapCurrentNews[kLat];
+
+                    if (mapMarkArray == undefined) {
+
+                        for (var l = 0; l < currentNewsLons.length; l++) {
+                            var newMarker = {
+                                id: jsonData[i]._id + "/" + count,
+                                latitude: kLat,
+                                longitude: currentNewsLons[l],
+                                showWindow: true,
+                                title: jsonData[i]._source.title
+
+                            };
+                            //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
+                            count++;
+                            marksRes.push(newMarker);
+                            mapMarkers[kLat] = new Array(currentNewsLons[l]);
+                        }
+                    } else {
+                        for (var l = 0; l < currentNewsLons.length; l++) {
+                            //case 2.2
+                            var lon = currentNewsLons[l];
+
+                            if (mapMarkers[kLat].indexOf(lon) == -1) {
+                                mapMarkArray.push(lon);
+                                var newMarker = {
+                                    id: jsonData[i]._id + "/" + count,
+                                    latitude: kLat,
+                                    longitude: lon,
+                                    showWindow: true,
+                                    title: jsonData[i]._source.title
+
+                                };
+                                //console.log(newMarker.latitude + '--' + newMarker.longitude);
+                                count++;
+                                marksRes.push(newMarker);
+                                mapMarkers[kLat] = mapMarkArray;
+                                //console.log("case 2.2: " + newMarker.latitude + '--' + newMarker.longitude);
+
+                            }
+                            //case 2.1
+                            else {
+                                //console.log("currentLong gia presente " + currentNewsLons[l]);
+                                var newLat = kLat * (Math.random() * (max - min) + min);
+                                while (Object.keys(mapMarkers).indexOf(newLat) != -1) {
+                                    newLat = kLat * (Math.random() * (max - min) + min);
+                                }
+                                var newLon = lon * (Math.random() * (max - min) + min);
+                                mapMarkers[newLat] = new Array(newLon.toString());
+
+                                var newMarker = {
+                                    id: jsonData[i]._id + "/" + count,
+                                    latitude: newLat,
+                                    longitude: newLon,
+                                    showWindow: true,
+                                    title: jsonData[i]._source.title
+
+                                };
+                                //console.log(newMarker.latitude + '--' + newMarker.longitude);
+                                count++;
+                                marksRes.push(newMarker);
+                                //console.log("case 2.1: " + newMarker.latitude + '--' + newMarker.longitude);
+                            }
+                        }
+
+                    }
+// */
+                }
+
+
+            }
+            //$scope.marksRes = marksRes;
+            //console.log($scope.marksRes);
+            return marksRes;
+        };
+
+
 
         /*
          ricordasi di aggiungere ng-init nella pagina web
