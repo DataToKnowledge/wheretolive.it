@@ -139,6 +139,9 @@ angular.module('wheretoliveApp')
               * Qui va la logica per ricevere l'elenco dei crimini nello speicifico intervallo temporale
                * e per aggiornare la mappa
               */
+             Search.crimePerTimeWindow($scope.minCrimeTime,actualDate).then(function(success){
+               console.log(success);
+             });
 
 		         $scope.$apply(); //Update bindings
 	         };
@@ -152,7 +155,8 @@ angular.module('wheretoliveApp')
                 //$scope.selection = $scope.crimesList;
 
 				//Set time slider Date objects
-	            $scope.minCrimeTimeObject = new Date('01/01/2014').getTime(); //time slider start date
+              $scope.minCrimeTime = new Date('01/01/2014');
+	            $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
 	            $scope.ActualtimeDateObject = new Date().getTime(); //time slider end date
             };
         }]);

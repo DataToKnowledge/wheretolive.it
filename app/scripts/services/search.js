@@ -565,4 +565,62 @@ app.service('Search', ['$http', function ($http) {
         query.query.filtered.query.bool.must[0]["match"]["location"] = city;
         return $http.post('http://www.wheretolive.it/map/service/wheretolive/news/_search', query);
     };
+
+  /**
+   * Restituisce l'elenco dei crimini commessi in una determinata finestra temporale
+   * @param  from - Date
+   * @param  to - Date
+   */
+  this.crimePerTimeWindow = function(from,to){
+    // Viene aggiunta una unita' al mese poiché per un motivo inspiegabile i mesi in javascript vanno da
+    // 0 a 11
+    var fromDate = (from.getMonth() + 1) + '-' + from.getDate() + '-' + from.getFullYear();
+    var toDate = (to.getMonth() + 1) + '-' + to.getDate() + '-' + to.getFullYear();
+    var query = {
+      "query": {
+        "filtered": {
+          "query": {
+            "bool": {
+              "must": [
+                {"match": {"location": "Bari"}}
+              ]
+            }
+          },
+          "filter": {
+            "range": {
+              "date": {
+                "from": fromDate,
+                "to": toDate
+              }
+            }
+          }
+        }
+      },
+      "size": 0
+      /*"aggs" : {
+        "crime_top" : {
+          "terms" : {
+            "field" : "crime",
+            "size": 50
+          },
+          "aggs": {
+            "day_histogram": {
+              "date_histogram": {
+                "field": "date",
+                "interval": "month",
+                "format" : "MM-yyyy",
+                "order": {
+                  "_key": "desc"
+                }
+              }
+            }
+          }
+        }
+
+      }*/
+    };
+
+    //query.query.filtered.query.bool.must[0]["match"]["location"] = city;
+    return $http.post('http://www.wheretolive.it/map/service/wheretolive/news/_search', query);
+  };
 }]);
