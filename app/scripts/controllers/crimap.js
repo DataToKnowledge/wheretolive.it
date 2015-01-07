@@ -9,7 +9,7 @@
  */
 angular.module('wheretoliveApp')
     .controller('CrimapCtrl', ['$scope', 'Search','$http','$log',
-        function ($scope, Search, $http){
+        function ($scope, Search, $http,$log){
             $scope.map = {
                 center: {
                     latitude: '41',
@@ -145,6 +145,17 @@ angular.module('wheretoliveApp')
 
 		         $scope.$apply(); //Update bindings
 	         };
+
+          /**
+           * Parse provided date (in unix timestamp format)
+           * and return human formatted date
+           */
+          $scope.humanDate = function(date){
+            $log.debug('Date ' + date);
+            var rawDate = new Date(date);
+            $log.debug(rawDate);
+            return rawDate.toLocaleDateString();
+          };
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
              Chiamata in news.html
@@ -154,9 +165,10 @@ angular.module('wheretoliveApp')
                 $scope.getLastCrimeNews();
                 //$scope.selection = $scope.crimesList;
 
-				//Set time slider Date objects
+				      //Set time slider Date objects
               $scope.minCrimeTime = new Date('01/01/2014');
 	            $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
-	            $scope.ActualtimeDateObject = new Date().getTime(); //time slider end date
+              $scope.curTime = $scope.minCrimeTimeObject; //initialize slider to floor of range
+	            $scope.actualtimeDateObject = Date.now(); //time slider end date
             };
         }]);

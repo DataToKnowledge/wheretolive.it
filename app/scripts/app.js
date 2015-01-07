@@ -19,8 +19,13 @@ angular
     'google-maps',
     'angularCharts',
     'angular-rickshaw',
-    'ngAutocomplete'
+    'ngAutocomplete',
+    'vr.directives.slider'
   ])
+  //Log provider configuration
+  .config(function($logProvider){
+    $logProvider.debugEnabled(true);
+  })
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
