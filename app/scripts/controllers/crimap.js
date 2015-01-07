@@ -151,10 +151,18 @@ angular.module('wheretoliveApp')
            * and return human formatted date
            */
           $scope.humanDate = function(date){
-            $log.debug('Date ' + date);
-            var rawDate = new Date(date);
-            $log.debug(rawDate);
-            return rawDate.toLocaleDateString();
+            return new Date(date).toLocaleDateString();
+          };
+
+          $scope.unixDate = function(date){
+            return new Date(date).getTime();
+          };
+
+          /**
+           * Parse provided range into human readable form
+           */
+          $scope.humanRange = function(){
+
           };
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
