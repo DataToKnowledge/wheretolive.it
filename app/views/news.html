@@ -7,15 +7,15 @@
                 </div-->
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="entry-title">
-                        <a href={{news._source.urlNews}} target="_blank">{{news._source.title}}</a>
+                        <a href={{news.fields.urlNews[0]}} target="_blank">{{news.fields.title[0]}}</a>
                     </h3>
                     <p class="entry-meta">
-                        Posted on <a class="entry-date" >{{news._source.date}}</a> | By <a class="entry-author" href={{news._source.urlWebsite}} target="_blank">{{getHostname(news._source.urlWebsite)}}</a> | Tags <a class="label label-danger" href="tag.html">CSS3</a>
+                        Posted on <a class="entry-date" >{{news.fields.date[0]}}</a> | By <a class="entry-author" href={{news.fields.urlWebsite[0]}} target="_blank">{{getHostname(news.fields.urlWebsite[0])}}</a> | Tags <a class="label label-danger" href="tag.html">CSS3</a>
                     </p>
                 </div>
             </header>
             <div class="entry-description">
-                <p class="text-justify">{{news._source.summary}} </p>
+                <p class="text-justify">{{news.fields.summary[0]}} </p>
             </div>
         </section> <!-- /.post -->
 
