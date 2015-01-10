@@ -25,8 +25,8 @@
         ng-model-range="endRangeTime"
         floor="{{minCrimeTimeObject}}"
         ceiling="{{actualtimeDateObject}}"
-        scale-fn="humanDate"
-        inverse-scale-fn="unixDate"
+        translate-fn="humanDate"
+        translate-range-fn="humanRange"
         buffer="86400000">
       </slider>
     </div>

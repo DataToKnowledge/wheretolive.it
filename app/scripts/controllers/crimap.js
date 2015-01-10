@@ -151,18 +151,21 @@ angular.module('wheretoliveApp')
            * and return human formatted date
            */
           $scope.humanDate = function(date){
-            return new Date(date).toLocaleDateString();
+            var dateToConvert = new Date(date*1);
+            return dateToConvert.toLocaleDateString();
           };
 
           $scope.unixDate = function(date){
-            return new Date(date).getTime();
+            var unixEpochTime = new Date(date);
+            return unixEpochTime.getTime();
           };
 
           /**
            * Parse provided range into human readable form
            */
-          $scope.humanRange = function(){
-
+          $scope.humanRange = function(lowBound,highBound,range){
+            $log.debug('lowBound');
+            return '';
           };
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
@@ -174,9 +177,10 @@ angular.module('wheretoliveApp')
                 //$scope.selection = $scope.crimesList;
 
 				      //Set time slider Date objects
-              $scope.minCrimeTime = new Date('01/01/2014');
+              $scope.minCrimeTime = new Date('01-01-2014');
 	            $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
               $scope.curTime = $scope.minCrimeTimeObject; //initialize slider to floor of range
-	            $scope.actualtimeDateObject = Date.now(); //time slider end date
+	            $scope.dummyDate = new Date();
+              $scope.actualtimeDateObject = Date.now(); //time slider end date
             };
         }]);
