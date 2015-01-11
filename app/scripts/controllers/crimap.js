@@ -187,7 +187,9 @@ angular.module('wheretoliveApp')
               $scope.minCrimeTime = new Date('01-01-2014');
 	            $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
               $scope.curTime = $scope.minCrimeTimeObject; //initialize slider to floor of range
-	            $scope.dummyDate = new Date();
               $scope.actualtimeDateObject = Date.now(); //time slider end date
+              //Setup knob (i.e. pallozze)
+              $scope.beginRangeTime = $scope.minCrimeTimeObject;
+              $scope.endRangeTime = $scope.actualtimeDateObject;
             };
         }]);
