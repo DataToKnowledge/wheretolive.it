@@ -565,6 +565,10 @@ slider span.bubble.low, slider span.bubble.high {
   background-color: #18bc9c;
 }
 
+.btn-info[disabled]{
+  background-color: #18bc9c;
+}
+
 .btn-info:hover{
   background-color: #149c82;
 }
