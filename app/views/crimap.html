@@ -46,7 +46,7 @@
       <div class="panel-body" ng-repeat="crime in crimesList" style="padding: 0">
         <div class="checkbox">
           <label>
-            <input type="checkbox" value="{{crime}}" checked>{{crime}}
+            <input type="checkbox" value="{{crime}}" ng-checked="isActiveCrime(crime)">{{crime}}
           </label>
         </div>
       </div>
