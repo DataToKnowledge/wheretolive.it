@@ -555,3 +555,8 @@ slider span.bubble.low, slider span.bubble.high {
   -ms-user-select:       none;
   user-select:           none;
 }
+
+.wtl-search-spinner{
+  position: absolute;
+  top: 0;
+}
