@@ -173,11 +173,12 @@ angular.module('wheretoliveApp')
           //crime isnt into list, add it
           $scope.selection.push(crime);
         }
+      };
 
+      $scope.applyCrimeMapFilters = function(){
         //Update crimeMap
         $scope.updateCrimeWindowTime();
       };
-
       /**
        * Dato un array di coppie (lan, lon) return un map (K,V) dove K= lan e V= array di longitudini distinte
        * @param array contiene un array di coppie (lan, lon)

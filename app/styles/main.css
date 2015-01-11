@@ -560,3 +560,11 @@ slider span.bubble.low, slider span.bubble.high {
   position: absolute;
   top: 0;
 }
+
+.btn-info{
+  background-color: #18bc9c;
+}
+
+.btn-info:hover{
+  background-color: #149c82;
+}
