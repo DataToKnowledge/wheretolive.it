@@ -91,8 +91,8 @@ app.service('Search', ['$http', function ($http) {
                   "geo_distance": {
                     "distance": "200km",
                     "positions": {
-                      "lat": "41",
-                      "lon": "16"
+                      "lat": "41.10",
+                      "lon": "16.87"
                     }
                   }
                 }
