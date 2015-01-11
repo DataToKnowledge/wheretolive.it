@@ -40,10 +40,10 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <div class="col-lg-6 fixed" style="padding-top: 15px;">
-            <google-map options="map.options" center="map.center" zoom="map.zoom" draggable="true">
-                <markers models="markers" coords="'self'" doCluster=true clusterOptions="{maxZoom:13}" click="'onClicked'" options="'options'" events="markersEvents">
-                </markers>
-            </google-map>
+          <ui-gmap-google-map options="map.options" center="map.center" zoom="map.zoom" draggable="true">
+            <ui-gmap-markers models="markers" coords="'self'" doCluster=true clusterOptions="{maxZoom:13}" click="'onClicked'" options="'options'" events="markersEvents">
+            </ui-gmap-markers>
+          </ui-gmap-google-map>
         </div>
     </div>
 </div>

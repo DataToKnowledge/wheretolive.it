@@ -10,18 +10,25 @@
 angular.module('wheretoliveApp')
     .controller('CrimapCtrl', ['$scope', 'Search','$http','$log',
         function ($scope, Search, $http,$log){
-            $scope.map = {
-                center: {
-                    latitude: '41',
-                    longitude: '16'
-                },
-                zoom: 8
-            };
+          /*
+           ##############################################################
+           ##                         GOOGLE HEATMAPS SETTINGS         ##
+           ##############################################################
+           */
+          var mapOptions = {
+            zoom: 8,
+            center: new google.maps.LatLng(41, 16)
+          };
 
-            $scope.options = {
-                value: 10
-            };
+          $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+
+
+          /*
+           ##############################################################
+           ##                         CRIME QUERY                      ##
+           ##############################################################
+           */
             $scope.searchCrimes = function () {
                 //console.log($scope.city);
                 console.log($scope.search);

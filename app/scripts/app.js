@@ -16,7 +16,7 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'google-maps',
+    'uiGmapgoogle-maps',
     'angularCharts',
     'angular-rickshaw',
     'ngAutocomplete',

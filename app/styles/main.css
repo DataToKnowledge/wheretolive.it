@@ -59,12 +59,9 @@ body {
 }
 .angular-google-map-container {
     height: 800px;
-    /*height: calc(100% - 0);*/
-    /*position: absolute;*/
-    /*right: 16px;*/
-    /*top: 50px;*/
-    /*bottom: 0;*/
-    /*overflow: hidden;*/
+}
+#map {
+  height: 800px;
 }
 /*Everything but the jumbotron gets side spacing for mobile first views*/
 
