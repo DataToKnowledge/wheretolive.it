@@ -29,11 +29,6 @@ angular.module('wheretoliveApp')
            ##                         CRIME QUERY                      ##
            ##############################################################
            */
-            $scope.searchCrimes = function () {
-                //console.log($scope.city);
-                console.log($scope.search);
-                //console.log($scope.search.options);
-            };
 
             $scope.getCrimesArray = function(){
                 //do get from data/listaReati.json
@@ -47,11 +42,6 @@ angular.module('wheretoliveApp')
                     });
             };
 
-
-            $scope.getCrimeMarkers = function(filter){
-
-
-            };
 
             $scope.getCrimes= function(){
                 $http({method: 'GET', url: '/data/listaReati.json'}).

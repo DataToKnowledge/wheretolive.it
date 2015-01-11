@@ -54,31 +54,48 @@ var serverAddress='http://www.wheretolive.it/map/service/wheretolive/news/_searc
 
     };
 
+  /**
+   * Used in crimap.js to find all news about crimes
+   * @returns {*}
+   */
     this.getLastCrimeNews = function(){
+        var min_date = "01-01-2014";
 
         var query = {
-            "query": {
-                "filtered": {
-                    "query": {
-                        "match_all": {
+          "_source": [
+            "date",
+            "positions",
+            "crimes"
+          ],
+          "query": {
+            "filtered": {
+              "query": {
+                "match_all": {}
+              },
+              "filter": {
+                "and": {
+                  "filters": [
+                    {
+                      "range": {
+                        "date": {
+                          "gte": "01-01-2014",
+                          "lte": "now"
                         }
+                      }
                     },
-                    "filter": {
-                        "exists": {
-                            "field": "crime"
-                        }
+                    {
+                      "exists": {
+                        "field": "crime"
+                      }
                     }
+                  ]
                 }
-            },
-            "sort": [
-                {
-                    "date": {
-                        "order": "desc"
-                    }
-                }
-            ]
+              }
+            }
+          }
         };
 
+        query.query.filtered.filter.and.filters[0]["range"].date.gte=min_date;
         return $http.post(serverAddress, query).success(function (data) {
             return data;
         });
