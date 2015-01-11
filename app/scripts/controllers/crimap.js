@@ -162,10 +162,6 @@ angular.module('wheretoliveApp')
             return dateToConvert.toLocaleDateString();
           };
 
-          $scope.unixDate = function(date){
-            var unixEpochTime = new Date(date);
-            return unixEpochTime.getTime();
-          };
 
           /**
            * Parse provided range into human readable form
@@ -174,6 +170,15 @@ angular.module('wheretoliveApp')
             $log.debug('lowBound');
             return '';
           };
+
+          /**
+           *
+           * @param lowBound
+           * @param highBound
+           */
+          $scope.updateCrimeWindowTime = function(){
+
+          }
             /*
              Init è una funzione speciale che viene richiamata ad ogni refresh della pagina.
              Chiamata in news.html
@@ -188,7 +193,7 @@ angular.module('wheretoliveApp')
 	            $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
               $scope.curTime = $scope.minCrimeTimeObject; //initialize slider to floor of range
               $scope.actualtimeDateObject = Date.now(); //time slider end date
-              //Setup knob (i.e. pallozze)
+              //Setup knob bounds (i.e. posizione delle pallozze)
               $scope.beginRangeTime = $scope.minCrimeTimeObject;
               $scope.endRangeTime = $scope.actualtimeDateObject;
             };
