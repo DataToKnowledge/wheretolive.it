@@ -58,7 +58,7 @@ var serverAddress='http://www.wheretolive.it/map/service/wheretolive/news/_searc
    * Used in crimap.js to find all news about crimes
    * @returns {*}
    */
-    this.getLastCrimeNews = function(){
+    this.getLastCrimeNews = function(terms){
         var min_date = "01-01-2014";
 
         var query = {
@@ -70,7 +70,12 @@ var serverAddress='http://www.wheretolive.it/map/service/wheretolive/news/_searc
           "query": {
             "filtered": {
               "query": {
-                "match_all": {}
+                "match": {
+                  "crimes": {
+                    "query": "",
+                    "operator": "or"
+                  }
+                }
               },
               "filter": {
                 "and": {
@@ -96,6 +101,7 @@ var serverAddress='http://www.wheretolive.it/map/service/wheretolive/news/_searc
         };
 
         query.query.filtered.filter.and.filters[0]["range"].date.gte=min_date;
+        console.log(query);
         return $http.post(serverAddress, query).success(function (data) {
             return data;
         });
