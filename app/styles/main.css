@@ -604,3 +604,6 @@ slider span.bubble.low, slider span.bubble.high {
   z-index:1000;
   text-align:center;
 }
+.form-control {
+  width: 1000px;
+}
