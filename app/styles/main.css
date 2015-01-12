@@ -572,3 +572,35 @@ slider span.bubble.low, slider span.bubble.high {
 .btn-info:hover{
   background-color: #149c82;
 }
+
+/**
+* Loading overlay rules
+**/
+
+.overlay-container {
+  display: block;
+}
+.overlay-background {
+  top:0px;
+  left:0px;
+  padding-left:100px;
+  position:absolute;
+  z-index:1000;
+  min-height: 100vh;
+  height: 100%;
+  width:100%;
+  background-color:#808080;
+  opacity:0.8;
+}
+.overlay-content {
+  position:absolute;
+  background-color:transparent;
+  font-weight: bold;
+  color: #585858;
+  top: 50%;
+  left: 40%;
+  height: 100px;
+  width: 300px;
+  z-index:1000;
+  text-align:center;
+}

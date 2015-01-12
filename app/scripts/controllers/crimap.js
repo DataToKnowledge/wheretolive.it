@@ -179,21 +179,18 @@ angular.module('wheretoliveApp')
         //Update crimeMap
         $scope.updateCrimeWindowTime();
       };
-      /**
-       * Dato un array di coppie (lan, lon) return un map (K,V) dove K= lan e V= array di longitudini distinte
-       * @param array contiene un array di coppie (lan, lon)
-       */
+
       var getMapMarkers = function (array) {
         var mapLat = {};
         for (var p = 0; p < array.length; p++) {
           //arrotondo la corrente latitudine e longitudine alla 6 cifra decimale
-          var currentLat = array[p].lat.toFixed(5);
+          var currentLat = array[p].lat.toFixed(7);
           //Case1: mapLat[currentLat]==undefined => inserisco (currentLan->Array(currentLon)) in mapLat
           //Case2: mapLat[currentLat]== array && array.contains(currentLon) => skip inserimento
           //Case3: mapLat[currentLat]== array && !array.contains(currentLon) => aggiungi currentLon in array
           var arrayLon = mapLat[currentLat];
           if (arrayLon == undefined) {
-            var currentLon = array[p].lon.toFixed(5);
+            var currentLon = array[p].lon.toFixed(7);
             mapLat[currentLat] = new Array(currentLon);
           } else if (arrayLon.indexOf(currentLon) == -1) {
             arrayLon.push(currentLon);
@@ -236,38 +233,48 @@ angular.module('wheretoliveApp')
             if (mapMarkArray == undefined) {
 
               for (var l = 0; l < currentNewsLons.length; l++) {
-                points.push(new google.maps.LatLng(kLat, currentNewsLons[l]));
-                //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
+                var data = {location:"", weight: ""};
+                data.location=new google.maps.LatLng(kLat, currentNewsLons[l]);
+                data.weight = 1;
+                points.push(data);
+                console.log("Count-"+count+"News-"+i+" case 1: " + kLat + '--' + currentNewsLons[l]);
                 count++;
                 mapMarkers[kLat] = new Array(currentNewsLons[l]);
               }
             } else {
               for (var l = 0; l < currentNewsLons.length; l++) {
                 //case 2.2
-                var lon = currentNewsLons[l];
+                var lon = parseFloat(currentNewsLons[l]).toFixed(7);
+
 
                 if (mapMarkers[kLat].indexOf(lon) == -1) {
                   mapMarkArray.push(lon);
                   //console.log(newMarker.latitude + '--' + newMarker.longitude);
                   count++;
-                  points.push(new google.maps.LatLng(kLat, lon));
+                  var data = {location:"", weight: ""};
+                  data.location=new google.maps.LatLng(kLat, lon);
+                  data.weight = 1;
+                  points.push(data);
                   mapMarkers[kLat] = mapMarkArray;
-                  //console.log("case 2.2: " + newMarker.latitude + '--' + newMarker.longitude);
+                  console.log("Count-"+count+"News-"+i+" case 2.2: " + kLat + '--' + lonTruncate);
 
                 }
                 //case 2.1
                 else {
                   //console.log("currentLong gia presente " + currentNewsLons[l]);
-                  var newLat = kLat * (Math.random() * (max - min) + min);
+                  var newLat = (parseFloat(kLat) * (Math.random() * (max - min) + min)).toFixed(7);
                   while (Object.keys(mapMarkers).indexOf(newLat) != -1) {
-                    newLat = kLat * (Math.random() * (max - min) + min);
+                    newLat = (parseFloat(kLat) * (Math.random() * (max - min) + min)).toFixed(7);
                   }
-                  var newLon = lon * (Math.random() * (max - min) + min);
+                  var newLon = (parseFloat(lon) * (Math.random() * (max - min) + min)).toFixed(7);
                   mapMarkers[newLat] = new Array(newLon.toString());
                   //console.log(newMarker.latitude + '--' + newMarker.longitude);
                   count++;
-                  points.push(new google.maps.LatLng(newLat, newLon));
-                  //console.log("case 2.1: " + newMarker.latitude + '--' + newMarker.longitude);
+                  var data = {location:"", weight: ""};
+                  data.location=new google.maps.LatLng(newLat, newLon);
+                  data.weight = 1;
+                  points.push(data);
+                  //console.log("Count-"+count+" News-"+i+" case 2.1: " + newLat + '--' + newLon);
                 }
               }
 
@@ -285,6 +292,7 @@ angular.module('wheretoliveApp')
        * @param highBound
        */
       $scope.updateCrimeWindowTime = function(){
+        $scope.loading = true;
         //Convert unixTime to human readable time
         var begin = parseDate($scope.beginRangeTime).replace(/\//g,'-');
         var end = parseDate($scope.endRangeTime).replace(/\//g,'-');
@@ -292,32 +300,30 @@ angular.module('wheretoliveApp')
         $log.debug($scope.selection);
         Search.searchCrimeNewsForDate($scope.selection,begin,end).success(function(heatmapRawData){
           //Build map with the retrieved point
-          var heatmapArray = [];
-          //Build an array of LatLng obj with retrieved point
-          heatmapRawData.hits.hits.forEach(function(hit){
-            hit._source.positions.forEach(function(position){
-              var lat = position.lat;
-              var lon = position.lon;
-              var googleLatLngObj = new google.maps.LatLng(lat,lon);
-              heatmapArray.push(googleLatLngObj);
-            });
-          });
+          var points = createMarkerWithOverlap(heatmapRawData.hits.hits);
           //Build a google MVC Array data structure from previously retrieved point
-          //var points = createMarkerWithOverlap(heatmapRawData.hits.hits);
-          var heatmapPointArray = new google.maps.MVCArray(heatmapArray);
+          var heatmapPointArray = new google.maps.MVCArray(points);
 
           //create heatmap object
+          //Parameters of heatmap inspired by PaperJS <http://darrenwiens.net/paperjs_vehicles.html>
           var heatMap = new google.maps.visualization.HeatmapLayer({
-            data: heatmapPointArray
+            data: heatmapPointArray,
+            opacity: 0.8,
+            maxIntensity: 10,
+            radius: 10 //The radius of influence for each data point (i.e. point dimension), in pixels.
           });
           //set map to visualize the heatmap
           heatMap.setMap($scope.map);
+          $scope.loading = false;
 
+        }).error(function(){
+          $scope.loading = false;
         });
       };
 
-      $scope.init = function () {
 
+      $scope.init = function () {
+        $scope.loading = false; //show or hide the loading layer
         //$scope.searchCrimeNewsForDate();
         $scope.selection = [];
         //Set time slider Date objects
