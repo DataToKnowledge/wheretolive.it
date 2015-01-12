@@ -265,8 +265,12 @@ angular.module('wheretoliveApp')
         $scope.curTime = $scope.minCrimeTimeObject; //initialize slider to floor of range
         $scope.actualtimeDateObject = Date.now(); //time slider end date
         //Setup knob bounds (i.e. posizione delle pallozze)
-        $scope.beginRangeTime = $scope.minCrimeTimeObject;
+        var beginRange = new Date(Date.now());
+        beginRange.setMonth(-1);
+        $scope.beginRangeTime = beginRange.getTime();
         $scope.endRangeTime = $scope.actualtimeDateObject;
+
+
 
         loadCrimesCheckBox();
 
