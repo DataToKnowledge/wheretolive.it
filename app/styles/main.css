@@ -493,7 +493,7 @@ slider {
   display:     block;
   position:    relative;
   height:      30px;
-  width:       83%;
+  width:       100%;
 }
 slider span.bar {
   height:     50%;

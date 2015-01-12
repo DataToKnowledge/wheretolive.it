@@ -12,11 +12,13 @@ angular.module('wheretoliveApp')
     function ($scope, Search, $http,$log){
       /*
        ##############################################################
-       ##                         GOOGLE HEATMAPS SETTINGS         ##
+       ##                         GOOGLE MAPS SETTINGS         ##
        ##############################################################
        */
       var mapOptions = {
         zoom: 8,
+        maxZoom:14,
+        minZoom:8,
         center: new google.maps.LatLng(41, 16)
       };
 
@@ -30,7 +32,6 @@ angular.module('wheretoliveApp')
        ##############################################################
        */
 
-
       var loadCrimesCheckBox= function(){
         $http({method: 'GET', url: '/data/listaReati.json'}).
           success(function(data, status, headers, config) {
@@ -40,9 +41,8 @@ angular.module('wheretoliveApp')
               crimeArray.push(crimesJson[p].crimine);
             }
             $scope.crimesList=crimeArray;
-            $scope.selection.push(crimeArray[0]);
 
-            searchCrimeNewsForDate($scope.beginRangeTime, $scope.endRangeTime);
+            //$scope.selection.push("li morti tuoi");
 
           }).
           error(function(data, status, headers, config) {
@@ -56,76 +56,6 @@ angular.module('wheretoliveApp')
         if(index==-1)
           return false;
         return true;
-      };
-
-
-      /**
-       * query per restituire i punti di una heatmap
-       * @param startData
-       * @param endData
-       */
-      var searchCrimeNewsForDate = function(startData, endData){
-        var crimesList = $scope.selection.concat(" ");
-        //var crimeList = "";
-
-        console.log("CrimeList: "+crimesList);
-        Search.searchCrimeNewsForDate(crimesList,startData, endData).then(function (data) {
-          $scope.newsArray = data.data.hits.hits;
-          console.log("News", data);
-          setMarkersNews($scope.newsArray);
-
-
-          //$scope.paginationRange = Pagination.range();
-        });
-      };
-
-
-
-      /*
-       Setta per ogni posizione un marker google-maps
-       */
-      var setMarkersNews = function (jsonData) {
-
-        //creo l'array dei markers a partire dal json
-        var markers = new Array();
-        var count = 0;
-        for (var i = 0; i < jsonData.length; i++) {
-
-          for (var p = 0; p < jsonData[i]._source.positions.length; p++) {
-            // console.log("mi sa che qui non entro");
-            var newMarker = {
-              id: jsonData[i]._id + "/" + count,
-              latitude: parseFloat(jsonData[i]._source.positions[p].lat),
-              longitude: parseFloat(jsonData[i]._source.positions[p].lon),
-              showWindow: true,
-              title: jsonData[i]._source.title
-
-            };
-
-            //console.log(newMarker.latitude + '--' + newMarker.longitude);
-            markers.push(newMarker);
-            count++;
-          }
-        }
-        //console.log("Trovati "+count+ " markers");
-        $scope.markers = markers;
-      };
-
-      // toggle selection for a given fruit by name
-      $scope.toggleSelection = function toggleSelection(crimeName) {
-        /*
-         var idx = $scope.selection.indexOf(crimeName);
-
-         // is currently selected
-         if (idx > -1) {
-         $scope.selection.splice(idx, 1);
-         }
-
-         // is newly selected
-         else {
-         $scope.selection.push(crimeName);
-         }*/
-        console.log("clisccato :"+crimeName);
       };
 
 
@@ -237,7 +167,7 @@ angular.module('wheretoliveApp')
                 data.location=new google.maps.LatLng(kLat, currentNewsLons[l]);
                 data.weight = 1;
                 points.push(data);
-                console.log("Count-"+count+"News-"+i+" case 1: " + kLat + '--' + currentNewsLons[l]);
+                // console.log("Count-"+count+"News-"+i+" case 1: " + kLat + '--' + currentNewsLons[l]);
                 count++;
                 mapMarkers[kLat] = new Array(currentNewsLons[l]);
               }
@@ -256,7 +186,7 @@ angular.module('wheretoliveApp')
                   data.weight = 1;
                   points.push(data);
                   mapMarkers[kLat] = mapMarkArray;
-                  console.log("Count-"+count+"News-"+i+" case 2.2: " + kLat + '--' + lonTruncate);
+                  // console.log("Count-"+count+"News-"+i+" case 2.2: " + kLat + '--' + lonTruncate);
 
                 }
                 //case 2.1
@@ -291,41 +221,44 @@ angular.module('wheretoliveApp')
        * @param lowBound
        * @param highBound
        */
-      $scope.updateCrimeWindowTime = function(){
-        $scope.loading = true;
-        //Convert unixTime to human readable time
-        var begin = parseDate($scope.beginRangeTime).replace(/\//g,'-');
-        var end = parseDate($scope.endRangeTime).replace(/\//g,'-');
-        //Call to heatMap service
-        $log.debug($scope.selection);
-        Search.searchCrimeNewsForDate($scope.selection,begin,end).success(function(heatmapRawData){
-          //Build map with the retrieved point
-          var points = createMarkerWithOverlap(heatmapRawData.hits.hits);
-          //Build a google MVC Array data structure from previously retrieved point
-          var heatmapPointArray = new google.maps.MVCArray(points);
+      $scope.updateCrimeWindowTime = function() {
 
-          //create heatmap object
-          //Parameters of heatmap inspired by PaperJS <http://darrenwiens.net/paperjs_vehicles.html>
-          var heatMap = new google.maps.visualization.HeatmapLayer({
-            data: heatmapPointArray,
-            opacity: 0.8,
-            maxIntensity: 10,
-            radius: 10 //The radius of influence for each data point (i.e. point dimension), in pixels.
+          //Convert unixTime to human readable time
+          var begin = parseDate($scope.beginRangeTime).replace(/\//g, '-');
+          var end = parseDate($scope.endRangeTime).replace(/\//g, '-');
+          //Call to heatMap service
+
+        if ($scope.selection.length != 0){
+          $scope.loading = true;
+          $log.debug($scope.selection);
+          Search.searchCrimeNewsForDate($scope.selection, begin, end).success(function (heatmapRawData) {
+            //Build map with the retrieved point
+            var points = createMarkerWithOverlap(heatmapRawData.hits.hits);
+            //Build a google MVC Array data structure from previously retrieved point
+            var heatmapPointArray = new google.maps.MVCArray(points);
+
+            //create heatmap object
+            //Parameters of heatmap inspired by PaperJS <http://darrenwiens.net/paperjs_vehicles.html>
+            var heatMap = new google.maps.visualization.HeatmapLayer({
+              data: heatmapPointArray,
+              opacity: 0.8,
+              maxIntensity: 10,
+              radius: 10 //The radius of influence for each data point (i.e. point dimension), in pixels.
+            });
+            //set map to visualize the heatmap
+            heatMap.setMap($scope.map);
+            $scope.loading = false;
+
+          }).error(function () {
+            $scope.loading = false;
           });
-          //set map to visualize the heatmap
-          heatMap.setMap($scope.map);
-          $scope.loading = false;
-
-        }).error(function(){
-          $scope.loading = false;
-        });
+        }
       };
-
 
       $scope.init = function () {
         $scope.loading = false; //show or hide the loading layer
         //$scope.searchCrimeNewsForDate();
-        $scope.selection = [];
+        $scope.selection= new Array();
         //Set time slider Date objects
         $scope.minCrimeTime = new Date('01-01-2014');
         $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
@@ -336,5 +269,6 @@ angular.module('wheretoliveApp')
         $scope.endRangeTime = $scope.actualtimeDateObject;
 
         loadCrimesCheckBox();
+
       };
     }]);

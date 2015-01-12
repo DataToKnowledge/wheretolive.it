@@ -59,7 +59,6 @@ app.service('Search', ['$http', function ($http) {
    * @returns {*}
    */
   this.searchCrimeNewsForDate = function(crimesList,startData, endData){
-    var min_date = "01-01-2014";
 
     var query = {
       "size": "1000",
@@ -103,18 +102,19 @@ app.service('Search', ['$http', function ($http) {
       }
     };
 
-    query.query.filtered.filter.and.filters[0]["range"].date.gte=startData;
-    query.query.filtered.filter.and.filters[0]["range"].date.lte=endData;
-    query.query.filtered.query.match.crimes.query=crimesList;
-    //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
-    console.log(query);
-    return $http.post(serverAddress, query).success(function (data) {
-      return data;
-    }).
-      error(function(data, status, headers, config) {
-        console.log(data);
-      }
-    );
+      query.query.filtered.filter.and.filters[0]["range"].date.gte = startData;
+      query.query.filtered.filter.and.filters[0]["range"].date.lte = endData;
+      query.query.filtered.query.match.crimes.query = crimesList;
+      //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
+      console.log(query);
+
+      return $http.post(serverAddress, query).success(function (data) {
+        return data;
+      }).
+        error(function (data, status, headers, config) {
+          console.log(data);
+        }
+      );
 
   };
 
