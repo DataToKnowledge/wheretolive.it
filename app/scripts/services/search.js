@@ -19,21 +19,11 @@ app.service('Search', ['$http', function ($http) {
     var queryAllMatch = {
       "size": "",
       "from": "",
+      "_source": ["urlWebsite","urlNews", "title", "summary","date", "nlp_tags" ],
       "query": {
-        "filtered": {
-          "query": {
-            "match": {
-              "_all": {
-                "query": "",
-                "operator": "and"
-              }
-            }
-          },
-          "filter": {
-            "exists": {
-              "field": "crime"
-            }
-          }
+        "query_string": {
+          "query": ""
+
         }
       },
       "sort": [
@@ -43,9 +33,8 @@ app.service('Search', ['$http', function ($http) {
           }
         }
       ]
-
     };
-    queryAllMatch.query.filtered.query.match._all.query = queryText;
+    queryAllMatch.query.query.query_string.query = queryText;
     queryAllMatch.size = size;
     queryAllMatch.from = from;
     return $http.post(serverAddress, queryAllMatch).success(function (data) {
@@ -187,6 +176,9 @@ app.service('Search', ['$http', function ($http) {
     });
 
   };
+
+
+
 
   this.searchInNLPTags = function (query, size, from) {
 

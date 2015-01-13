@@ -1,4 +1,4 @@
-<div class="row" ng-init="init()">
+<div class="row" data-ng-init="init()">
   <div class="row row-pad-15 text-center">
     <h1>Ricerca</h1>
   </div>
@@ -29,16 +29,9 @@
       <form>
         <div class="form-inline" role="form">
 
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            <span id="search_concept">Cerca nelle news...</span> <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a id="city" href="#city">Cerca per Città ...</a></li>
-            <li><a id="crime" href="#crime">Cerca per reato ...</a></li>
-            <li><a id="nlpTags" href="#nlpTags">Si parla di ...</a></li>
-            <li><a id="fullText" href="#fullText">Cerca nelle news ...</a></li>
-
-          </ul>
+          <select id="sel" class="input-block-level" ng-model="dropdownList" ng-options="obj.id as obj.name for obj in dropdownList.data">
+            <option value="">Other</option>
+          </select>
 
           <input ng-model="searchQuery" ng-change="startSearch()"
                  placeholder="es. Sparatorie a Bari"
@@ -54,7 +47,7 @@
           </span>
           <span id="spin-search-icon2" class="sr-only">(Ricerca in corso)</span>
         </div>
-        </div>
+
       </form>
     </div>
   </div>
@@ -73,12 +66,17 @@
           </div>
         </header>
       </section> <!-- /.post -->
+
+      <div class="total_result" id="total_result"><h3>{{total_results}}</h3>
+        <hr>
+        <br/></div>
       <section class="post" ng-repeat="result in queryResults">
         <header class="entry-header row">
           <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
 			  <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
 		  </div-->
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 scrollit">
+          ">
             <h3 class="entry-title">
               <a href={{result.fields.urlNews[0]}} target="_blank">{{result.fields.title[0]}}</a>
             </h3>
@@ -94,3 +92,21 @@
     </div>
   </div>
 </div>
+
+<div class="row row-centered">
+  <ul class="pagination">
+    <li ng-hide="disablePrevPage()">
+      <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
+    </li>
+    <li ng-repeat="n in paginationGetRange()"
+        ng-class="{active: n == paginationCurrentPage}"
+      >
+      <a href ng-click="updateSearch(n)">{{n+1}}</a>
+    </li>
+    <li ng-hide="disableNextPage()">
+      <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
+    </li>
+
+  </ul>
+</div>
+
