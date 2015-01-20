@@ -85,7 +85,7 @@
     <![endif]-->
     <!-- endbuild -->
 
-    <script src='http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false'></script>
+    <script src='http://maps.googleapis.com/maps/api/js?libraries=places,visualization&sensor=false'></script>
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -104,8 +104,10 @@
     <script src="bower_components/rickshaw/rickshaw.js"></script>
     <script src="bower_components/angular-rickshaw/rickshaw.js"></script>
     <script src="bower_components/ngAutocomplete/src/ngAutocomplete.js"></script>
+    <script src="bower_components/venturocket-angular-slider/build/angular-slider.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-touch.min.js"></script>
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
@@ -115,10 +117,9 @@
         <script src="scripts/controllers/analytics.js"></script>
         <script src="scripts/controllers/crimap.js"></script>
         <!--script src="scripts/controllers/login.js"></script-->
-        <!--script src="scripts/controllers/search.js"></script-->
+        <script src="scripts/controllers/search.js"></script>
         <script src="scripts/services/search.js"></script>
         <script src="scripts/controllers/tips.js"></script>
-        <script src="scripts/directives/timeslider.js"></script>
         <!-- endbuild -->
 </body>
 </html>

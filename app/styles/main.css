@@ -59,12 +59,9 @@ body {
 }
 .angular-google-map-container {
     height: 800px;
-    /*height: calc(100% - 0);*/
-    /*position: absolute;*/
-    /*right: 16px;*/
-    /*top: 50px;*/
-    /*bottom: 0;*/
-    /*overflow: hidden;*/
+}
+#map {
+  height: 800px;
 }
 /*Everything but the jumbotron gets side spacing for mobile first views*/
 
@@ -383,7 +380,7 @@ ul.alert-dropdown {
 }
 
 /* Time Slider CSS customizations */
-.time-slider-content {
+/*.time-slider-content {
 	padding-left: 15px;
 	width: 100%;
 	cursor: pointer;
@@ -406,13 +403,10 @@ ul.alert-dropdown {
 }
 
 input[type=range] {
-	/*removes default webkit styles*/
 	-webkit-appearance: none;
 
-	/*fix for FF unable to apply focus style bug */
 	border: 1px solid white;
 
-	/*required for proper track sizing in FF*/
 	width: 1000px;
 }
 input[type=range]::-webkit-slider-runnable-track {
@@ -453,7 +447,6 @@ input[type=range]::-moz-range-thumb {
 	background: #149c82;
 }
 
-/*hide the outline behind the border*/
 input[type=range]:-moz-focusring{
 	outline: 1px solid white;
 	outline-offset: -1px;
@@ -463,14 +456,14 @@ input[type=range]::-ms-track {
 	width: 1000px;
 	height: 5px;
 
-	/*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+
 	background: transparent;
 
-	/*leave room for the larger thumb to overflow with a transparent border */
+
 	border-color: transparent;
 	border-width: 6px 0;
 
-	/*remove default tick marks*/
+
 	color: transparent;
 }
 input[type=range]::-ms-fill-lower {
@@ -493,4 +486,124 @@ input[type=range]:focus::-ms-fill-lower {
 }
 input[type=range]:focus::-ms-fill-upper {
 	background: #ccc;
+} */
+
+/* Example slider customizqtion*/
+slider {
+  display:     block;
+  position:    relative;
+  height:      30px;
+  width:       100%;
+}
+slider span.bar {
+  height:     50%;
+  z-index:    0;
+  background: #eee;
+  left:       0;
+  top:        25%;
+  cursor:     pointer;
+}
+slider span.bar.selection, slider span.bar.unselected {
+}
+slider span.bar.selection {
+  background: #149c82;
+  opacity:    0.7;
+}
+slider span.bar.unselected {
+  width:      auto;
+  background: #149c82;
+  opacity:    0.3;
+}
+slider span.pointer {
+  cursor:           pointer;
+  width:            15px;
+  top:              0;
+  bottom:           0;
+  background-color: #149c82;
+}
+slider span.pointer:hover {
+}
+slider span.pointer.active {
+}
+slider span.bubble {
+  font-size:   0.7em;
+  line-height: 1.4em;
+  font-family: sans-serif;
+  text-align:  center;
+  text-shadow: none;
+  top:         -1.3em;
+  cursor:      pointer;
+}
+slider span.bubble.selection, slider span.bubble.limit {
+  top: 25%;
+}
+slider span.bubble.selection {
+}
+slider span.bubble.limit {
+}
+slider span.bubble.low, slider span.bubble.high {
+}
+
+::-ms-tooltip {
+  display: none;
+}
+#slider-container {
+  -webkit-touch-callout: none;
+  -webkit-user-select:   none;
+  -khtml-user-select:    none;
+  -moz-user-select:      -moz-none;
+  -ms-user-select:       none;
+  user-select:           none;
+}
+
+.wtl-search-spinner{
+  position: absolute;
+  top: 0;
+}
+
+.btn-info{
+  background-color: #18bc9c;
+}
+
+.btn-info[disabled]{
+  background-color: #18bc9c;
+}
+
+.btn-info:hover{
+  background-color: #149c82;
+}
+
+/**
+* Loading overlay rules
+**/
+
+.overlay-container {
+  display: block;
+}
+.overlay-background {
+  top:0px;
+  left:0px;
+  padding-left:100px;
+  position:absolute;
+  z-index:1000;
+  min-height: 100vh;
+  height: 100%;
+  width:100%;
+  background-color:#808080;
+  opacity:0.8;
+}
+.overlay-content {
+  position:absolute;
+  background-color:transparent;
+  font-weight: bold;
+  color: #585858;
+  top: 50%;
+  left: 40%;
+  height: 100px;
+  width: 300px;
+  z-index:1000;
+  text-align:center;
+}
+.form-control {
+  width: 1000px;
 }
