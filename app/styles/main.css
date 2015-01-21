@@ -607,3 +607,7 @@ slider span.bubble.low, slider span.bubble.high {
 .form-control {
   width: 1000px;
 }
+
+#googleplay {
+  top-margin: 40px;
+}
