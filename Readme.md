@@ -12,4 +12,4 @@
 8. run the script deploy.sh to deploy the dist and the dockers folder to the deploy branch
 9. check if the images wheretolive/apache_wtl exists
 10. check if the docker is running if yes changes are automatically reported otherwise you should run the docker and described 
-    in the dockers readme
+    in the dockers readme build
