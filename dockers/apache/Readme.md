@@ -18,4 +18,9 @@
 
 ### Usage
 
-      docker run -d -p 81:80 --name wtl -v "$(pwd)":/var/www wheretolive/apache_wtl 
+	1. docker run -d -e VIRTUAL_HOST=www.wheretolive.it --name wtl1 -v "$(pwd)":/var/www wheretolive/apache_wtl
+
+    2. docker run -d -p 81:80 --name wtl -v "$(pwd)":/var/www wheretolive/apache_wtl 
+    
+The configuration 1 should be used after reading this link on [how to use nginx for reverse proxy](http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/).
+the configuration 2 is deprecated
