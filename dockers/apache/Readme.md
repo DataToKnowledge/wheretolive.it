@@ -18,4 +18,4 @@
 
 ### Usage
 
-      docker run -d -p 81:80 --name wtl -v "$(pwd)"/dist:/var/www wheretolive/apache_wtl 
+      docker run -d -p 81:80 --name wtl -v "$(pwd)":/var/www wheretolive/apache_wtl 
