@@ -402,7 +402,7 @@ fieldset[disabled] .btn-link:focus {
 .btn-info.active,
 .open > .dropdown-toggle.btn-info {
   color: #ffffff;
-  background-color: #217dbb;
+  background-color: #18bc9c;
   border-color: transparent;
 }
 .btn-info:active,
@@ -425,8 +425,8 @@ fieldset[disabled] .btn-info:active,
 .btn-info.disabled.active,
 .btn-info[disabled].active,
 fieldset[disabled] .btn-info.active {
-  background-color: #3498db;
-  border-color: #3498db;
+  background-color: #18bc9c;
+  border-color: transparent;
 }
 .btn-info .badge {
   color: #3498db;
