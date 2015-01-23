@@ -11,10 +11,6 @@ var app = angular.module('wheretoliveApp');
 app.service('Search', ['$http', function ($http) {
   var serverAddress='http://www.wheretolive.it/map/service/wheretolive/news/_search';
 
-
-
-
-
   this.searchFullText = function (queryText, size, from) {
     var queryAllMatch = {
       "size": "",
@@ -666,6 +662,6 @@ app.service('Search', ['$http', function ($http) {
     };
 
     //query.query.filtered.query.bool.must[0]["match"]["location"] = city;
-    return $http.post('http://www.wheretolive.it/map/service/wheretolive/news/_search', query);
+    return $http.post(serverAddress, query);
   };
 }]);
