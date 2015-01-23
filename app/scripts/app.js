@@ -56,6 +56,10 @@ angular
         templateUrl: 'views/search.html',
         controller: 'SearchCtrl'
       })
+      .when('/android', {
+        templateUrl: 'views/android.html',
+        controller: 'AndroidCtrl'
+      })
       .when('/tips', {
         templateUrl: 'views/tips.html',
         controller: 'TipsCtrl'
