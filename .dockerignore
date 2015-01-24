@@ -1,0 +1,9 @@
+.idea
+.tmp
+app
+LICENSE
+app
+bower_components
+listaReati.json
+node_modules     test
+Readme.md
