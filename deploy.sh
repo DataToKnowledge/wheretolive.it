@@ -1,19 +1,26 @@
 #!/bin/sh
 
-echo "build the project"
-grunt build || exit 1
+msg() {
+  echo "[DEPLOY] ${1}"
+}
 
-echo "copy the dockers folder to the dist folder"
-cp -r dockers dist/ || exit 1
+error() {
+  echo "[DEPLOY] FAILED! ${1}"
+  exit 1
+}
 
-echo "add the dist folder to git"
-git add -f dist || exit 1
-git commit -m "updated dist folder" || exit 1
+msg "build the project"
+grunt build || error
 
-echo "push to origin deploy branch"
-git subtree push --prefix dist origin deploy || exit 1
+msg "copy the dockers folder to the dist folder"
+cp -r dockers dist/ || error
 
-echo "ok remove the dist directory"
-git rm -r dist || exit 1
+msg "add the dist folder to git"
+git add -f dist || error
+git commit -m "updated dist folder" || error
 
-echo "go to the server and update"
+msg "push to origin deploy branch"
+git push origin :deploy || error
+git subtree push --prefix dist origin deploy || error
+
+msg "go to the server and update"
