@@ -21,7 +21,7 @@ git commit -m "updated dist folder" || error
 
 msg "push to origin deploy branch"
 # Cool way, see https://stackoverflow.com/questions/12644855/how-do-i-reset-a-heroku-git-repository-to-its-initial-state/19374618#19374618
-git push origin `git subtree split --prefix dist deploy`:deploy --force
+git push origin `git subtree split --prefix dist`:deploy --force
 # Mortal way
 #git push origin :deploy || error
 #git subtree push --prefix dist origin deploy || error
