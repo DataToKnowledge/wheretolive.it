@@ -17,10 +17,5 @@ cp -r Dockerfile dist/ || error
 chmod +x deploy_repo.sh
 cp -r deploy_repo.sh dist/ || error
 
-./dist/deploy_repo.sh || error
-
-
-msg "delete dist"
-rm -rf dist || error
-
-msg "the new version is online"
+msg "run the following commands into the dist folder"
+cd dist && ./deploy_repo.sh || error
