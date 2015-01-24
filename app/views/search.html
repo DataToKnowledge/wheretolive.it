@@ -10,12 +10,10 @@
                  placeholder="es. Sparatorie a Bari"
                  class="form-control"
                  type="text"
-                 aria-describedby="spin-search-icon"
-            />
+                 aria-describedby="spin-search-icon"/>
           <span class="form-control-feedback wtl-search-spinner"
                 aria-hidden="true"
-                ng-show="isSearchStart"
-            >
+                ng-show="isSearchStart">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
           </span>
           <span id="spin-search-icon" class="sr-only">(Ricerca in corso)</span>
@@ -37,12 +35,10 @@
                  placeholder="es. Sparatorie a Bari"
                  class="form-control"
                  type="text"
-                 aria-describedby="spin-search-icon"
-            />
+                 aria-describedby="spin-search-icon"/>
           <span class="form-control-feedback wtl-search-spinner"
                 aria-hidden="true"
-                ng-show="isSearchStart"
-            >
+                ng-show="isSearchStart">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
           </span>
           <span id="spin-search-icon2" class="sr-only">(Ricerca in corso)</span>
@@ -54,7 +50,7 @@
 
   <div class="row row-pad-15">
     <div class="col-md-12">
-      <section class="post" ng-show="!resultFound" >
+      <section class="post" ng-show="!resultFound">
         <header class="entry-header row">
           <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
 			  <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
@@ -76,7 +72,6 @@
 			  <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
 		  </div-->
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 scrollit">
-          ">
             <h3 class="entry-title">
               <a href={{result.fields.urlNews[0]}} target="_blank">{{result.fields.title[0]}}</a>
             </h3>
@@ -99,8 +94,7 @@
       <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
     </li>
     <li ng-repeat="n in paginationGetRange()"
-        ng-class="{active: n == paginationCurrentPage}"
-      >
+        ng-class="{active: n == paginationCurrentPage}">
       <a href ng-click="updateSearch(n)">{{n+1}}</a>
     </li>
     <li ng-hide="disableNextPage()">

@@ -48,10 +48,6 @@ angular
         templateUrl: 'views/analytics.html',
         controller: 'AnalyticsCtrl'
       })
-      .when('/login', {
-        templateUrl: 'views/login.html',
-        controller: 'LoginCtrl'
-      })
       .when('/search', {
         templateUrl: 'views/search.html',
         controller: 'SearchCtrl'
