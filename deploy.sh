@@ -13,14 +13,14 @@ msg "build the project"
 grunt build || error
 
 msg "copy the dockers folder to the dist folder"
-cp -r dockers dist/ || error
+cp -r Dockerfile dist/ || error
+chmod +x deploy_repo.sh
+cp -r deploy_repo.sh dist/ || error
 
-msg "add the dist folder to git"
-git add -f dist || error
-git commit -m "updated dist folder" || error
+./dist/deploy_repo.sh || error
 
-msg "push to origin deploy branch"
-git push origin :deploy || error
-git subtree push --prefix dist origin deploy || error
 
-msg "go to the server and update"
+msg "delete dist"
+rm -rf dist || error
+
+msg "the new version is online"
