@@ -1,7 +1,6 @@
 {
   "name": "wheretolive",
   "version": "0.0.0",
-  "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.1",
     "grunt-autoprefixer": "^0.7.3",
@@ -32,5 +31,9 @@
   },
   "scripts": {
     "test": "grunt test"
+  },
+  "dependencies": {
+    "express": "^4.11.1",
+    "gzippo": "^0.2.0"
   }
 }
