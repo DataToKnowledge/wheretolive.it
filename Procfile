@@ -1,1 +1,1 @@
-web: werver.js
+web: server.js
