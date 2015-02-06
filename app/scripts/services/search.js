@@ -9,22 +9,23 @@
  */
 var app = angular.module('wheretoliveApp');
 app.service('Search', ['$http', function ($http) {
-  var serverAddress='http://www.wheretolive.it/map/service/wheretolive/news/_search';
+  var serverAddress='http://wheretolive.it:9200/wheretolive/_search';
 
   this.searchFullText = function (queryText, size, from) {
     var queryAllMatch = {
-      "size": "",
-      "from": "",
-      "_source": ["urlWebsite","urlNews", "title", "summary","date", "nlp_tags" ],
+      "size": "10",
+      "from": "0",
+      "_source": [
+        "urlWebsite","urlNews", "title", "summary","date", "tags"
+      ],
       "query": {
         "query_string": {
           "query": ""
-
         }
       },
       "sort": [
         {
-          "date": {
+          "focusDate": {
             "order": "desc"
           }
         }
@@ -106,39 +107,42 @@ app.service('Search', ['$http', function ($http) {
   this.getLastClosestNews = function (size, from, position) {
     console.log("getLastClosestNews with positions");
     var query = {
-      "fields": ["urlWebsite", "urlNews", "title", "summary", "date"],
+      "_source": [
+        "urlWebsite",
+        "urlNews",
+        "title",
+        "summary",
+        "focusDate",
+        "focusLocation",
+        "imageLink",
+        "newspaper"
+      ],
       "size": "",
       "from": "",
       "query": {
         "match_all": {}
       },
-      "partial_fields" : {
-        "partial1" : {
-          "include": "positions"
-        }},
       "sort": [
         {
-          "date": {
+          "focusDate": {
             "order": "desc"
           }
         },
         {
           "_geo_distance": {
-            "positions": [],
+            "focusLocation.geo_location": [],
             "order": "asc",
             "unit": "km"
           }
+
         }
-
-
       ]
     };
 
     query.size = size;
     query.from = from;
-    query.sort[1]["_geo_distance"].positions[0] = position.coords.latitude;
-    query.sort[1]["_geo_distance"].positions[1] = position.coords.longitude;
-    console.log(query);
+    query.sort[1]["_geo_distance"]["focusLocation.geo_location"][0] = position.coords.latitude;
+    query.sort[1]["_geo_distance"]["focusLocation.geo_location"][1] = position.coords.longitude;
     return $http.post(serverAddress, query).success(function (data) {
       return data;
     });
@@ -148,28 +152,43 @@ app.service('Search', ['$http', function ($http) {
   this.getLastNews = function (size, from) {
     console.log("getLastNews withOUT positions");
     var query = {
-      "fields": ["urlWebsite", "urlNews", "title", "summary", "date"],
+      "_source": [
+        "urlWebsite",
+        "urlNews",
+        "title",
+        "summary",
+        "focusDate",
+        "focusLocation",
+        "imageLink",
+        "newspaper"
+      ],
       "size": "",
       "from": "",
       "query": {
-        "match_all": {
-        }
+        "match_all": {}
       },
-      "partial_fields" : {
-        "partial1" : {
-          "include": "positions"
-        }},
       "sort": [
-        {"date": {"order": "desc"}}
+        {
+          "focusDate": {
+            "order": "desc"
+          }
+        }
       ]
-
     };
 
     query.size = size;
     query.from = from;
-    return $http.post(serverAddress, query).success(function (data) {
+    return $http.post(serverAddress, query).success(function(data, status, headers, config) {
+      console.log(data, status );
       return data;
-    });
+    }).
+      error(function(data, status, headers, config) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        console.log("Error!!");
+        console.log("Data:"+data+"\n Status:"+status+"\n Header: "+headers+"\n Config "+config);
+      });
+
 
   };
 
