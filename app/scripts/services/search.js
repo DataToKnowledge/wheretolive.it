@@ -16,7 +16,16 @@ app.service('Search', ['$http', function ($http) {
       "size": "10",
       "from": "0",
       "_source": [
-        "urlWebsite","urlNews", "title", "summary","date", "tags"
+        "namedEntities",
+        "urlWebSite",
+        "urlNews",
+        "title",
+        "summary",
+        "focusDate",
+        "focusLocation",
+        "imageLink",
+        "newspaper",
+        "tags"
       ],
       "query": {
         "query_string": {
@@ -31,13 +40,14 @@ app.service('Search', ['$http', function ($http) {
         }
       ]
     };
-    queryAllMatch.query.query.query_string.query = queryText;
+    queryAllMatch.query.query_string.query = queryText;
     queryAllMatch.size = size;
     queryAllMatch.from = from;
     return $http.post(serverAddress, queryAllMatch).success(function (data) {
       return data;
+    }).error(function (data, status, headers, config) {
+      console.log("Error "+data);
     });
-
   };
 
   /**

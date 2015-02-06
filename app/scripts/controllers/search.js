@@ -11,11 +11,12 @@ angular.module('wheretoliveApp')
     //Originale
     $scope.init = function (){
       $scope.loading= false;
-      $scope.results= false;
+      $scope.result= false;
       $scope.numRes = 0;
       $scope.paginationCurrentPage = 0;
       $scope.paginationPageSize = 10;
       $scope.paginationPageCount = Math.ceil($scope.numRes /  $scope.paginationPageSize) - 1;
+      $scope.queryText;
     };
 
 
@@ -34,8 +35,10 @@ angular.module('wheretoliveApp')
       var start;
       start = $scope.paginationCurrentPage;
       //  console.log("In range(): pageCount(): "+this.pageCount());
+      $scope.paginationPageCount = Math.ceil($scope.numRes /  $scope.paginationPageSize) - 1;
       if (start > $scope.paginationPageCount - rangeSize) {
         start = $scope.paginationPageCount - rangeSize + 1;
+       // return ps;
       }
 
       for (var i = start; i < start + rangeSize; i++) {
@@ -55,7 +58,8 @@ angular.module('wheretoliveApp')
     };
 
     $scope.disablePrevPage = function () {
-      return $scope.paginationCurrentPage === 0;
+      //console.log("Prova"+$scope.paginationCurrentPage === 0)
+      return ($scope.paginationCurrentPage === 0);
     };
 
     $scope.disableNextPage = function () {
@@ -67,9 +71,10 @@ angular.module('wheretoliveApp')
 
     $scope.updateSearch = function (newPage) {
       paginationSetCurrentPage(newPage);
-      getLatestNews();
+      $scope.searchFullText();
       $('html,body, div.scrollit').animate({scrollTop: 0}, 'slow')
     };
+
 
 
 
@@ -79,7 +84,9 @@ angular.module('wheretoliveApp')
      ##############################################################
      */
 
-
+    var getPageSize= function(){
+      return 10;
+    };
     /**
      *Usato per normalizzare i rank dei tag nell'intervallo 0-1
      **/
@@ -89,7 +96,7 @@ angular.module('wheretoliveApp')
       for (var i = 0; i < tagsJson.length; i++) {
 
         //per ogni tag nella news
-        var scores = tagsJson[i]._source.nlp_tags.map(function (el) {
+        var scores = tagsJson[i]._source.tags.map(function (el) {
           return el.rank;
         });
         var min = Math.min.apply(null, scores);
@@ -105,36 +112,23 @@ angular.module('wheretoliveApp')
     /*
      Effettua ricerche full-text tra tutti gli articoli
      */
-    $scope.searchFullText = function (text) {
+    $scope.searchFullText = function () {
+      $scope.loading=true;
+      var from = getPageSize() * $scope.paginationCurrentPage;
 
-      var from = $scope.querySize * $scope.paginationService.getCurrentPage();
-
-      Search.searchFullText(text, $scope.querySize, from).then(function (data) {
+      Search.searchFullText($scope.queryText, getPageSize(), from).then(function (data) {
+        $scope.loading=false;
         $scope.newsArray = data.data.hits.hits;
-        normalizeTagsSize($scope.newsArray);
-        $scope.results = data.data.hits.total;
-        setDivResult();
-        console.log($scope.results);
-        console.log("Range: " + $scope.paginationRange);
+        //normalizeTagsSize($scope.newsArray);
+        $scope.numRes = data.data.hits.total;
+        $scope.result =  $scope.numRes == 0;
+        console.log($scope.newsArray);
+        console.log("Numero risultati: " +  $scope.result );
       });
     };
 
 
 
-
-    /**
-     * Begin search
-     */
-    $scope.startSearch = function (){
-      if($scope.searchQuery.length >= $scope.minQueryLength){
-        $scope.isSearchStart = true;
-        $scope.resultFound = false;
-      }
-      else{
-        $scope.isSearchStart = false;
-        $scope.resultFound = true;
-      }
-    }
 
 
 

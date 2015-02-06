@@ -3,12 +3,14 @@
     <h1>Ricerca</h1>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <form ng-submit="searchFullText()">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+      <input ng-model="queryText" type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
       <div class="input-group-btn">
         <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
       </div>
     </div>
+    </form>
     <div ng-show="loading" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 post text-center">
       <div class="spinner">
         <div class="bounce1"></div>
@@ -16,15 +18,17 @@
         <div class="bounce3"></div>
       </div>
     </div>
-    <div ng-show="results" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 post text-center">
+    <div ng-show="result" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 post text-center">
         <h3>Nessun Risultato Trovato</h3>
     </div>
 
   </div>
-  <div class="total_result" id="total_result"><h3>{{total_results}}</h3>
+  <!--div ng-show="results">
+    <br/>
+    <h3>Trovati {{numRes}} risultati</h3>
     <hr>
     <br/>
-  </div>
+  </div-->
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 scrollit">
     <section class="post" ng-repeat="news in newsArray" id="{{news._id}}">
@@ -65,7 +69,11 @@
     </div>
   </div>
 
-
+  <span  id="top-link-block" class="row">
+  <a href="#top" class="well well-sm" onclick="$('html,body, div.scrollit').animate({scrollTop:0},'slow');return false;">
+    <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+  </a>
+</span>
 
 
 
