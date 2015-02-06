@@ -108,7 +108,8 @@ app.service('Search', ['$http', function ($http) {
     console.log("getLastClosestNews with positions");
     var query = {
       "_source": [
-        "urlWebsite",
+        "namedEntities",
+        "urlWebSite",
         "urlNews",
         "title",
         "summary",
@@ -153,7 +154,8 @@ app.service('Search', ['$http', function ($http) {
     console.log("getLastNews withOUT positions");
     var query = {
       "_source": [
-        "urlWebsite",
+        "namedEntities",
+        "urlWebSite",
         "urlNews",
         "title",
         "summary",

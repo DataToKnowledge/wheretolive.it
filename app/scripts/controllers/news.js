@@ -89,7 +89,7 @@ angular.module('wheretoliveApp')
     var getCurrentPosition = function () {
       window.navigator.geolocation.getCurrentPosition(function (position) {
         $scope.$apply(function () {
-          console.log('Current position', position);
+          //console.log('Current position', position);
           $scope.position = position;
           $scope.map = {
             center: $scope.position.coords,
@@ -154,42 +154,6 @@ angular.module('wheretoliveApp')
       }
     };
 
-
-    /*
-     Data l'url di una news, restituisce il suo hostname
-     */
-    $scope.getHostname = function (href) {
-      var l = document.createElement("a");
-      l.href = href;
-      return l.hostname;
-    };
-
-
-    /**
-     * Dato un array di coppie (lan, lon) return un map (K,V) dove K= lan e V= array di longitudini distinte
-     * @param array contiene un array di coppie (lan, lon)
-     */
-    var getMapMarkers = function (array) {
-      var mapLat = {};
-      for (var p = 0; p < array.length; p++) {
-        //arrotondo la corrente latitudine e longitudine alla 6 cifra decimale
-        var currentLat = array[p].lat.toFixed(5);
-        //Case1: mapLat[currentLat]==undefined => inserisco (currentLan->Array(currentLon)) in mapLat
-        //Case2: mapLat[currentLat]== array && array.contains(currentLon) => skip inserimento
-        //Case3: mapLat[currentLat]== array && !array.contains(currentLon) => aggiungi currentLon in array
-        var arrayLon = mapLat[currentLat];
-        if (arrayLon == undefined) {
-          var currentLon = array[p].lon.toFixed(5);
-          mapLat[currentLat] = new Array(currentLon);
-        } else if (arrayLon.indexOf(currentLon) == -1) {
-          arrayLon.push(currentLon);
-          mapLat[currentLat] = arrayLon;
-        }
-      }
-
-      return mapLat;
-    };
-
     var createMarkerWithOverlap = function (jsonData) {
       var marksRes = new Array();
       var count = 0;
@@ -199,13 +163,6 @@ angular.module('wheretoliveApp')
       var mapMarkers = {};
 
       for (var i = 0; i < jsonData.length; i++) {
-
-        //var mapCurrentNews = getMapMarkers(jsonData[i].fields.partial1[0].positions);
-        //var keysMapCurrentNews = Object.keys(mapCurrentNews);
-        // console.log("***News numero " + i + " di " + jsonData.length + "***");
-        //for (var k = 0; k < keysMapCurrentNews.length; k++) {
-
-
 
           //Case1: mapMarkers[iLat]==undefined => inserisco (iLat->mapCurrentNews[iLat]) in mapMarkers
           //Case2: mapMarkers[iLat]== array perOgni e in mapCurrentNews[iLat] se:
@@ -286,14 +243,8 @@ angular.module('wheretoliveApp')
           }
 
       }
-      console.log(marksRes.length);
       return marksRes;
     };
-
-
-    /*
-     ricordasi di aggiungere ng-init nella pagina web
-     */
     $scope.init = function () {
       getCurrentPosition();
       getLatestNews();
