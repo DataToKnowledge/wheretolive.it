@@ -10,13 +10,15 @@ angular.module('wheretoliveApp')
 
     //Originale
     $scope.init = function (){
-      $scope.searchQuery = '';
-      $scope.minQueryLength = 3;
-      $scope.queryResults = []; //After search
-      $scope.isSearchStart = false; //Do not show search spinner indicator
-      $scope.resultFound = true; //show or hide 'no result' box
-      console.log("mag "+$scope.results);
+      $scope.loading= false;
+      $scope.results= false;
+      $scope.numRes = 0;
+      $scope.paginationCurrentPage = 0;
+      $scope.paginationPageSize = 10;
+      $scope.paginationPageCount = Math.ceil($scope.numRes /  $scope.paginationPageSize) - 1;
     };
+
+
 
     /*
      ##############################################################
@@ -24,11 +26,6 @@ angular.module('wheretoliveApp')
      ##############################################################
      */
 
-    $scope.results = 0;
-    $scope.paginationCurrentPage = 0;
-    var paginationPageSize = 15;
-    var paginationPageCount = Math.ceil($scope.results / paginationPageSize) - 1;
-    console.log($scope.results +" "+paginationPageSize);
 
 
     $scope.paginationGetRange = function () {
@@ -36,9 +33,9 @@ angular.module('wheretoliveApp')
       var ps = [];
       var start;
       start = $scope.paginationCurrentPage;
-      console.log("In range():"+ rangeSize+" pageCount(): "+ paginationPageCount);
-      if (start > paginationPageCount - rangeSize) {
-        start = paginationPageCount - rangeSize + 1;
+      //  console.log("In range(): pageCount(): "+this.pageCount());
+      if (start > $scope.paginationPageCount - rangeSize) {
+        start = $scope.paginationPageCount - rangeSize + 1;
       }
 
       for (var i = start; i < start + rangeSize; i++) {
@@ -62,16 +59,18 @@ angular.module('wheretoliveApp')
     };
 
     $scope.disableNextPage = function () {
-      var res = ($scope.paginationCurrentPage === paginationPageCount) || ( paginationPageCount === -1);
+      var res = ($scope.paginationCurrentPage === $scope.paginationPageCount) || ($scope.paginationPageCount === -1);
       //console.log("Disable: "+ res);
       return res;
     };
+
 
     $scope.updateSearch = function (newPage) {
       paginationSetCurrentPage(newPage);
       getLatestNews();
       $('html,body, div.scrollit').animate({scrollTop: 0}, 'slow')
     };
+
 
 
     /*
@@ -81,19 +80,6 @@ angular.module('wheretoliveApp')
      */
 
 
-    $scope.dropdownList = {
-      data: [
-        {id: 'id1',
-        name: 'Cerca nelle news ...'},
-        {id: 'id2',
-        name: 'Si parla di ...'},
-        {id: 'id3',
-          name: 'Cerca per Reato...'},
-        {id: 'id4',
-          name: 'Cerca per Città ...'}
-  ]};
-
-    $scope.list_category = 'id1';
     /**
      *Usato per normalizzare i rank dei tag nell'intervallo 0-1
      **/

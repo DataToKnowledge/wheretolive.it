@@ -2,105 +2,72 @@
   <div class="row row-pad-15 text-center">
     <h1>Ricerca</h1>
   </div>
-  <div class="row row-pad-15">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <form>
-        <div class="form-group has-feedback">
-          <input ng-model="searchQuery" ng-change="startSearch()"
-                 placeholder="es. Sparatorie a Bari"
-                 class="form-control"
-                 type="text"
-                 aria-describedby="spin-search-icon"/>
-          <span class="form-control-feedback wtl-search-spinner"
-                aria-hidden="true"
-                ng-show="isSearchStart">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-          </span>
-          <span id="spin-search-icon" class="sr-only">(Ricerca in corso)</span>
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+      <div class="input-group-btn">
+        <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+      </div>
+    </div>
+    <div ng-show="loading" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 post text-center">
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    </div>
+    <div ng-show="results" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 post text-center">
+        <h3>Nessun Risultato Trovato</h3>
+    </div>
+
+  </div>
+  <div class="total_result" id="total_result"><h3>{{total_results}}</h3>
+    <hr>
+    <br/>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 scrollit">
+    <section class="post" ng-repeat="news in newsArray" id="{{news._id}}">
+      <header class="entry-header row">
+        <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+            <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
+        </div-->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <h3 class="entry-title">
+            <a href={{news._source.urlNews}} target="_blank">{{news._source.title}}</a>
+          </h3>
+          <p class="entry-meta">
+            Posted on <a class="entry-date" >{{news._source.focusDate}}</a> | By <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news._source.newspaper}}</a> | Tags <span ng-repeat="crime in news._source.namedEntities.crimes.slice(0,3)"><a class="entry-author" href="">{{crime}} </a></span>
+            <!--a class="entry-author" href="">{{news._source.namedEntities.crimes}}</a-->
+          </p>
         </div>
-      </form>
+      </header>
+      <div class="entry-description">
+        <p class="text-justify">{{news._source.summary}} </p>
+      </div>
+    </section> <!-- /.post -->
+
+
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+      <ul class="pagination">
+        <li ng-hide="disablePrevPage()">
+          <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
+        </li>
+        <li ng-repeat="n in paginationGetRange()"
+            ng-class="{active: n == paginationCurrentPage}">
+          <a href ng-click="updateSearch(n)">{{n+1}}</a>
+        </li>
+        <li ng-hide="disableNextPage()">
+          <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
+        </li>
+
+      </ul>
     </div>
   </div>
 
-  <div class="row row-pad-15">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <form>
-        <div class="form-inline" role="form">
 
-          <select id="sel" class="input-block-level" ng-model="dropdownList" ng-options="obj.id as obj.name for obj in dropdownList.data">
-            <option value="">Other</option>
-          </select>
 
-          <input ng-model="searchQuery" ng-change="startSearch()"
-                 placeholder="es. Sparatorie a Bari"
-                 class="form-control"
-                 type="text"
-                 aria-describedby="spin-search-icon"/>
-          <span class="form-control-feedback wtl-search-spinner"
-                aria-hidden="true"
-                ng-show="isSearchStart">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-          </span>
-          <span id="spin-search-icon2" class="sr-only">(Ricerca in corso)</span>
-        </div>
 
-      </form>
-    </div>
-  </div>
 
-  <div class="row row-pad-15">
-    <div class="col-md-12">
-      <section class="post" ng-show="!resultFound">
-        <header class="entry-header row">
-          <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-			  <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
-		  </div-->
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <h3 class="entry-title text-center">
-              Nessun risultato trovato
-            </h3>
-          </div>
-        </header>
-      </section> <!-- /.post -->
-
-      <div class="total_result" id="total_result"><h3>{{total_results}}</h3>
-        <hr>
-        <br/></div>
-      <section class="post" ng-repeat="result in queryResults">
-        <header class="entry-header row">
-          <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-			  <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
-		  </div-->
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 scrollit">
-            <h3 class="entry-title">
-              <a href={{result.fields.urlNews[0]}} target="_blank">{{result.fields.title[0]}}</a>
-            </h3>
-            <p class="entry-meta">
-              Posted on <a class="entry-date" >{{result.fields.date[0]}}</a> | By <a class="entry-author" href={{result.fields.urlWebsite[0]}} target="_blank">{{getHostname(news.fields.urlWebsite[0])}}</a> | Tags <a class="label label-danger" href="tag.html">CSS3</a>
-            </p>
-          </div>
-        </header>
-        <div class="entry-description">
-          <p class="text-justify">{{result.fields.summary[0]}} </p>
-        </div>
-      </section> <!-- /.post -->
-    </div>
-  </div>
-</div>
-
-<div class="row row-centered">
-  <ul class="pagination">
-    <li ng-hide="disablePrevPage()">
-      <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
-    </li>
-    <li ng-repeat="n in paginationGetRange()"
-        ng-class="{active: n == paginationCurrentPage}">
-      <a href ng-click="updateSearch(n)">{{n+1}}</a>
-    </li>
-    <li ng-hide="disableNextPage()">
-      <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
-    </li>
-
-  </ul>
 </div>
 
