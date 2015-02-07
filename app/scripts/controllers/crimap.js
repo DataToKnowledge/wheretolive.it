@@ -36,9 +36,9 @@ angular.module('wheretoliveApp')
         $http({method: 'GET', url: '/data/listaReati.json'}).
           success(function(data, status, headers, config) {
             var crimeArray =  new Array();
-            var crimesJson = data.slice(0,20);
-            for (var p = 0; p < crimesJson.length; p++) {
-              crimeArray.push(crimesJson[p].crimine);
+            //var crimesJson = data.toArray().slice(0,20);
+            for (var p = 0; p < 20; p++) {
+              crimeArray.push(data[p].crimine);
             }
             $scope.crimesList=crimeArray;
 
@@ -141,52 +141,42 @@ angular.module('wheretoliveApp')
         var mapMarkers = {};
 
         for (var i = 0; i < jsonData.length; i++) {
-
-          // var mapCurrentNews = getMapMarkers(jsonData[i].fields.partial1[0].positions);
-          var mapCurrentNews = getMapMarkers(jsonData[i]._source.positions);
-          var keysMapCurrentNews = Object.keys(mapCurrentNews);
-          // console.log("***News numero " + i + " di " + jsonData.length + "***");
-          for (var k = 0; k < keysMapCurrentNews.length; k++) {
-
-
-
             //Case1: mapMarkers[kLat]==undefined => inserisco (kLat->mapCurrentNews[kLat]) in mapMarkers
             //Case2: mapMarkers[kLat]== array perOgni e in mapCurrentNews[kLat] se:
             // 2.1 array.contains(e) inserisco un marker in posizione newLat= kLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
             //        ed aggiorno mapMarkers con newLat e newLon
             // 2.2 !array.contains(e) aggiorno mapMarkers[kLat], aggiungendo e
 
-            var kLat = keysMapCurrentNews[k];
-            var mapMarkArray = mapMarkers[kLat];
-            var currentNewsLons = mapCurrentNews[kLat];
 
-            if (mapMarkArray == undefined) {
+          if(jsonData[i]._source["focusLocation"]!=undefined) {
+            var coords = jsonData[i]._source.focusLocation.geo_location.split(",");
+            var kLat = parseFloat(coords[0]).toFixed(7);
+            var lon = parseFloat(coords[1]).toFixed(7);
+            if (mapMarkers[kLat] == undefined) {
 
-              for (var l = 0; l < currentNewsLons.length; l++) {
-                var data = {location:"", weight: ""};
-                data.location=new google.maps.LatLng(kLat, currentNewsLons[l]);
+
+                var data = {location: "", weight: ""};
+                data.location = new google.maps.LatLng(kLat, lon);
                 data.weight = 1;
                 points.push(data);
-                // console.log("Count-"+count+"News-"+i+" case 1: " + kLat + '--' + currentNewsLons[l]);
+                console.log("Count-"+count+"News-"+i+" case 1: " + kLat + '--' + lon);
                 count++;
-                mapMarkers[kLat] = new Array(currentNewsLons[l]);
-              }
-            } else {
-              for (var l = 0; l < currentNewsLons.length; l++) {
-                //case 2.2
-                var lon = parseFloat(currentNewsLons[l]).toFixed(7);
+                mapMarkers[kLat] = new Array(lon);
 
+            } else {
+
+                //case 2.2
 
                 if (mapMarkers[kLat].indexOf(lon) == -1) {
-                  mapMarkArray.push(lon);
+                  mapMarkers.push(lon);
                   //console.log(newMarker.latitude + '--' + newMarker.longitude);
                   count++;
-                  var data = {location:"", weight: ""};
-                  data.location=new google.maps.LatLng(kLat, lon);
+                  var data = {location: "", weight: ""};
+                  data.location = new google.maps.LatLng(kLat, lon);
                   data.weight = 1;
                   points.push(data);
-                  mapMarkers[kLat] = mapMarkArray;
-                  // console.log("Count-"+count+"News-"+i+" case 2.2: " + kLat + '--' + lonTruncate);
+                  //mapMarkers[kLat] = mapMarkArray;
+                  console.log("Count-"+count+"News-"+i+" case 2.2: " + kLat + '--' + lon);
 
                 }
                 //case 2.1
@@ -200,19 +190,22 @@ angular.module('wheretoliveApp')
                   mapMarkers[newLat] = new Array(newLon.toString());
                   //console.log(newMarker.latitude + '--' + newMarker.longitude);
                   count++;
-                  var data = {location:"", weight: ""};
-                  data.location=new google.maps.LatLng(newLat, newLon);
+                  var data = {location: "", weight: ""};
+                  data.location = new google.maps.LatLng(newLat, newLon);
                   data.weight = 1;
                   points.push(data);
-                  //console.log("Count-"+count+" News-"+i+" case 2.1: " + newLat + '--' + newLon);
+                  console.log("Count-"+count+" News-"+i+" case 2.1: " + newLat + '--' + newLon);
                 }
-              }
+
 
             }
+
+          }else{
+            console.log("La news "+i+" non ha coordinate");
           }
 
-
         }
+        console.log("numero punti: "+points.length);
         return points;
       };
 
@@ -231,7 +224,8 @@ angular.module('wheretoliveApp')
         if ($scope.selection.length != 0){
           $scope.loading = true;
           $log.debug($scope.selection);
-          Search.searchCrimeNewsForDate($scope.selection, begin, end).success(function (heatmapRawData) {
+          //var string = $scope.selection.toString();
+          Search.searchCrimeNewsForDate($scope.selection.toString(), begin, end).success(function (heatmapRawData) {
             //Build map with the retrieved point
             var points = createMarkerWithOverlap(heatmapRawData.hits.hits);
             //Build a google MVC Array data structure from previously retrieved point

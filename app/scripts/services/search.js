@@ -57,17 +57,17 @@ app.service('Search', ['$http', function ($http) {
   this.searchCrimeNewsForDate = function(crimesList,startData, endData){
 
     var query = {
-      "size": "1000",
-      "_source": [
-        "positions"
-      ],
+      "size":1000,
+      "_source":["focusLocation"],
       "query": {
         "filtered": {
           "query": {
-            "match": {
-              "crimes": {
-                "query": "",
-                "operator": "or"
+            "nested": {
+              "path": "namedEntities",
+              "query": {
+                "match": {
+                  "crimeStems": ""
+                }
               }
             }
           },
@@ -76,18 +76,20 @@ app.service('Search', ['$http', function ($http) {
               "filters": [
                 {
                   "range": {
-                    "date": {
+                    "focusDate": {
                       "gte": "01-10-2014",
                       "lte": "now"
                     }
                   }
                 },
                 {
-                  "geo_distance": {
-                    "distance": "200km",
-                    "positions": {
-                      "lat": "41.10",
-                      "lon": "16.87"
+                  "nested": {
+                    "path": "focusLocation",
+                    "filter": {
+                      "geo_distance": {
+                        "distance": "100km",
+                        "geo_location": "41,16"
+                      }
                     }
                   }
                 }
@@ -98,13 +100,14 @@ app.service('Search', ['$http', function ($http) {
       }
     };
 
-      query.query.filtered.filter.and.filters[0]["range"].date.gte = startData;
-      query.query.filtered.filter.and.filters[0]["range"].date.lte = endData;
-      query.query.filtered.query.match.crimes.query = crimesList;
+      query.query.filtered.filter.and.filters[0]["range"].focusDate.gte = startData;
+      query.query.filtered.filter.and.filters[0]["range"].focusDate.lte = endData;
+      query.query.filtered.query.nested.query.match.crimeStems = crimesList;
       //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
-      console.log(query);
+      //console.log(query);
 
       return $http.post(serverAddress, query).success(function (data) {
+        console.log(data);
         return data;
       }).
         error(function (data, status, headers, config) {
