@@ -10,8 +10,11 @@
                         <a href={{news._source.urlNews}} target="_blank">{{news._source.title}}</a>
                     </h3>
                     <p class="entry-meta">
-                        Posted on <a class="entry-date" >{{news._source.focusDate}}</a> | By <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news._source.newspaper}}</a> | Tags <span ng-repeat="crime in news._source.namedEntities.crimes.slice(0,3)"><a class="entry-author" href="">{{crime}} </a></span>
-                      <!--a class="entry-author" href="">{{news._source.namedEntities.crimes}}</a-->
+                        Posted on <a class="entry-date" >{{news._source.focusDate}}</a> | By <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news._source.newspaper}}</a> | Tags
+                     <span ng-repeat="crime in news._source.namedEntities.crimes.slice(0,4)">
+                      <span class="label label-success">{{crime}}
+                       </span>&nbsp</span>
+
                     </p>
                 </div>
             </header>
