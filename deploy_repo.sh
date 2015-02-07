@@ -14,4 +14,4 @@ git init || error
 git add . || error
 git commit -am "deploy commit" || error
 git remote add dokku dokku@datatoknowledge.it:wtl || error
-git push dokku master || error
+git push dokku master -f || error

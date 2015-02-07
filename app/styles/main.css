@@ -635,3 +635,8 @@ slider span.bubble.low, slider span.bubble.high {
 @-webkit-keyframes bouncedelay{
   0%,100%,80%{-webkit-transform:scale(0);transform:scale(0)}40%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes bouncedelay{0%,100%,80%{-webkit-transform:scale(0);transform:scale(0)}40%{-webkit-transform:scale(1);transform:scale(1)}}
 
+.fa{
+  color: #18bc9c;
+}
+
+a:link{color: #18bc9c;}
