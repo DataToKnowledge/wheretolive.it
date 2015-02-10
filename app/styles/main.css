@@ -638,3 +638,8 @@ slider span.bubble.low, slider span.bubble.high {
 .fa {
   color: #18bc9c;
 }
+
+#map {
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
+}
