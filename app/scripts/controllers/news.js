@@ -71,16 +71,18 @@ angular.module('wheretoliveApp')
      */
     $scope.map = {
       center: {
-        latitude: '41',
-        longitude: '16'
+        latitude: '41.118532',
+        longitude: '16.869020'
       },
       options: {
-        maxZoom: 17,
-        minZoom: 2
+        maxZoom: 14,
+        minZoom: 8,
+        streetViewControl: false
       },
       zoom: 8,
-      clusterOptions: {maxZoom: 10}
-
+      clusterOptions: {
+        maxZoom: 10
+      }
     };
 
     /*
