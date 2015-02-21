@@ -1,11 +1,11 @@
 <div class="row" data-ng-init="init()">
   <div class="row row-pad-15 text-center">
-    <h1>Ricerca</h1>
+    <h1>Ricerca notizie</h1>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <form ng-submit="searchFullText()">
     <div class="input-group">
-      <input ng-model="queryText" type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+      <input ng-model="queryText" type="text" class="form-control" placeholder="Sparatoria a Bari" name="srch-term" id="srch-term">
       <div class="input-group-btn">
         <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
       </div>
@@ -30,7 +30,7 @@
     <br/>
   </div-->
 
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 scrollit">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <section class="post" ng-repeat="news in newsArray" id="{{news._id}}">
       <header class="entry-header row">
         <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
@@ -51,7 +51,6 @@
       </div>
     </section> <!-- /.post -->
 
-
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
       <ul class="pagination">
         <li ng-hide="disablePrevPage()">
@@ -64,18 +63,13 @@
         <li ng-hide="disableNextPage()">
           <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
         </li>
-
       </ul>
     </div>
+
+    <span  id="top-link-block" class="row">
+      <a href="#top" class="well well-sm" onclick="$('html,body, div.scrollit').animate({scrollTop:0},'slow');return false;">
+        <i class="glyphicon glyphicon-chevron-up"></i> Back to Top</a>
+    </span>
   </div>
-
-  <span  id="top-link-block" class="row">
-  <a href="#top" class="well well-sm" onclick="$('html,body, div.scrollit').animate({scrollTop:0},'slow');return false;">
-    <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
-  </a>
-</span>
-
-
-
 </div>
 
