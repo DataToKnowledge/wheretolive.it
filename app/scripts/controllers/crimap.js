@@ -19,12 +19,46 @@ angular.module('wheretoliveApp')
         zoom: 8,
         maxZoom:14,
         minZoom:8,
-        center: new google.maps.LatLng(41, 16)
+        streetViewControl: false,
+        center: new google.maps.LatLng(41.118532, 16.869020)
       };
 
       $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+      var service = new google.maps.places.PlacesService($scope.map);
 
+      /*
+       ##############################################################
+       ##                         PLACES QUERY                     ##
+       ##############################################################
+       */
+      var performSearch = function() {
+        var request = {
+          bounds: $scope.map.getBounds(),
+          types: ['bank', 'train_station', 'post_office', 'school', 'university']
+        };
+        service.radarSearch(request, function(results, status) {
+          if (status != google.maps.places.PlacesServiceStatus.OK) {
+            return;
+          }
+          for (var i = 0, result; result = results[i]; i++) {
+            var marker = new google.maps.Marker({
+              map: $scope.map,
+              position: result.geometry.location,
+              icon: {
+                path: 'M 0,-24 6,-7 24,-7 10,4 15,21 0,11 -15,21 -10,4 -24,-7 -6,-7 z',
+                fillColor: '#ffff00',
+                fillOpacity: 1,
+                scale: 1/4,
+                strokeColor: '#bd8d2c',
+                strokeWeight: 1
+              }
+            });
+          }
+        });
+      };
+
+      google.maps.event.addListenerOnce($scope.map, 'bounds_changed', performSearch);
 
       /*
        ##############################################################
