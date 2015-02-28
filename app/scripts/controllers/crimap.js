@@ -25,6 +25,19 @@ angular.module('wheretoliveApp')
 
       $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+      google.maps.event.addListener($scope.map, 'bounds_changed', function() {
+        // Aspetta 2 secondi prima di effettuare la ricerca
+        window.setTimeout(function() {
+          $scope.applyServicesFilters();
+        }, 2000);
+      });
+      /*google.maps.event.addListener($scope.map, 'center_changed', function() {
+        // Aspetta 2 secondi prima di effettuare la ricerca
+        window.setTimeout(function() {
+          $scope.applyServicesFilters();
+        }, 2000);
+      });*/
+
       var service = new google.maps.places.PlacesService($scope.map);
 
       /*
@@ -41,12 +54,29 @@ angular.module('wheretoliveApp')
           if (status != google.maps.places.PlacesServiceStatus.OK) {
             return;
           }
-          for (var i = 0, result; result = results[i]; i++) {
+          for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+
             var marker = new google.maps.Marker({
               map: $scope.map,
+              placeId: result.place_id,
               position: result.geometry.location,
               icon: '/images/markers/' + icon + '.png'
             });
+            $scope.markers.push(marker);
+
+            /*
+            google.maps.event.addListener(marker, 'click', function() {
+              service.getDetails(marker, function(place, status) {
+                if (status != google.maps.places.PlacesServiceStatus.OK) {
+                  return;
+                }
+                var infoWindow = new google.maps.InfoWindow();
+                infoWindow.setContent(place.name);
+                infoWindow.open($scope.map, marker);
+              });
+            });
+            */
           }
         });
       };
@@ -75,22 +105,22 @@ angular.module('wheretoliveApp')
       var loadServicesCheckBox = function() {
         var services = {};
 
-        services["banche"] = ['bank', 'post_office'];
-        services["sanità"] = ['health', 'pharmacy'];
-        services["scuole"] = ['school', 'university'];
-        services["trasporti"] = ['airport', 'train_station'];
+        services['banche'] = ['bank', 'post_office'];
+        services['sanità'] = ['health', 'pharmacy'];
+        services['scuole'] = ['school', 'university'];
+        services['trasporti'] = ['airport', 'train_station'];
 
         $scope.services = services;
       };
 
       $scope.isActiveCrime = function(value) {
         var index = $scope.enabledCrimes.indexOf(value);
-        return (index != -1);
+        return (index !== -1);
       };
 
       $scope.isActiveServices = function(value) {
         var index = $scope.enabledServices.indexOf(value);
-        return (index != -1);
+        return (index !== -1);
       };
 
       /*
@@ -153,7 +183,12 @@ angular.module('wheretoliveApp')
       };
 
       $scope.applyServicesFilters = function() {
-        for (var i in $scope.enabledServices) {
+        // Remove previously added markers
+        for (var m = 0; m < $scope.markers.length; m++) {
+          $scope.markers[m].setMap(null);
+        }
+
+        for (var i = 0; i < $scope.enabledServices.length; i++) {
           var serv = $scope.enabledServices[i];
           loadServices($scope.services[serv], serv);
         }
@@ -312,6 +347,9 @@ angular.module('wheretoliveApp')
         beginRange.setMonth(-1);
         $scope.beginRangeTime = beginRange.getTime();
         $scope.endRangeTime = $scope.actualtimeDateObject;
+
+        // Take trace of manually added markers
+        $scope.markers = new Array();
 
         loadCrimesCheckBox();
         loadServicesCheckBox();
