@@ -17,7 +17,7 @@ angular.module('wheretoliveApp')
        */
       var mapOptions = {
         zoom: 8,
-        maxZoom:14,
+        maxZoom:16,
         minZoom:8,
         streetViewControl: false,
         center: new google.maps.LatLng(41.118532, 16.869020)
@@ -25,40 +25,61 @@ angular.module('wheretoliveApp')
 
       $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+      google.maps.event.addListener($scope.map, 'bounds_changed', function() {
+        // Aspetta 2 secondi prima di effettuare la ricerca
+        window.setTimeout(function() {
+          $scope.applyServicesFilters();
+        }, 2000);
+      });
+      /*google.maps.event.addListener($scope.map, 'center_changed', function() {
+        // Aspetta 2 secondi prima di effettuare la ricerca
+        window.setTimeout(function() {
+          $scope.applyServicesFilters();
+        }, 2000);
+      });*/
+
       var service = new google.maps.places.PlacesService($scope.map);
 
       /*
        ##############################################################
-       ##                         PLACES QUERY                     ##
+       ##                         SERVICES QUERY                   ##
        ##############################################################
        */
-      var performSearch = function() {
+      var loadServices = function(types, icon) {
         var request = {
           bounds: $scope.map.getBounds(),
-          types: ['bank', 'train_station', 'post_office', 'school', 'university']
+          types: types
         };
         service.radarSearch(request, function(results, status) {
           if (status != google.maps.places.PlacesServiceStatus.OK) {
             return;
           }
-          for (var i = 0, result; result = results[i]; i++) {
+          for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+
             var marker = new google.maps.Marker({
               map: $scope.map,
+              placeId: result.place_id,
               position: result.geometry.location,
-              icon: {
-                path: 'M 0,-24 6,-7 24,-7 10,4 15,21 0,11 -15,21 -10,4 -24,-7 -6,-7 z',
-                fillColor: '#ffff00',
-                fillOpacity: 1,
-                scale: 1/4,
-                strokeColor: '#bd8d2c',
-                strokeWeight: 1
-              }
+              icon: '/images/markers/' + icon + '.png'
             });
+            $scope.markers.push(marker);
+
+            /*
+            google.maps.event.addListener(marker, 'click', function() {
+              service.getDetails(marker, function(place, status) {
+                if (status != google.maps.places.PlacesServiceStatus.OK) {
+                  return;
+                }
+                var infoWindow = new google.maps.InfoWindow();
+                infoWindow.setContent(place.name);
+                infoWindow.open($scope.map, marker);
+              });
+            });
+            */
           }
         });
       };
-
-      google.maps.event.addListenerOnce($scope.map, 'bounds_changed', performSearch);
 
       /*
        ##############################################################
@@ -75,23 +96,32 @@ angular.module('wheretoliveApp')
               crimeArray.push(data[p].crimine);
             }
             $scope.crimesList=crimeArray;
-
-            //$scope.selection.push("li morti tuoi");
-
           }).
           error(function(data, status, headers, config) {
             console.log("error");
-            //return {};
           });
       };
 
-      $scope.isActiveCrime= function(value){
-        var index= $scope.selection.indexOf(value);
-        if(index==-1)
-          return false;
-        return true;
+      var loadServicesCheckBox = function() {
+        var services = {};
+
+        services['banche'] = ['bank', 'post_office'];
+        services['sanità'] = ['health', 'pharmacy'];
+        services['scuole'] = ['school', 'university'];
+        services['trasporti'] = ['airport', 'train_station'];
+
+        $scope.services = services;
       };
 
+      $scope.isActiveCrime = function(value) {
+        var index = $scope.enabledCrimes.indexOf(value);
+        return (index !== -1);
+      };
+
+      $scope.isActiveServices = function(value) {
+        var index = $scope.enabledServices.indexOf(value);
+        return (index !== -1);
+      };
 
       /*
        ##############################################################
@@ -128,20 +158,40 @@ angular.module('wheretoliveApp')
       };
 
       $scope.updateCrimeMap = function(crime){
-        var indexCrime = $scope.selection.indexOf(crime);
+        var indexCrime = $scope.enabledCrimes.indexOf(crime);
         if(indexCrime > -1){
           //Crime already into list, remove it
-          $scope.selection.splice(indexCrime,1);
+          $scope.enabledCrimes.splice(indexCrime,1);
         }
         else{
           //crime isnt into list, add it
-          $scope.selection.push(crime);
+          $scope.enabledCrimes.push(crime);
         }
+      };
+
+      $scope.updateServiceMap = function(service) {
+        var i = $scope.enabledServices.indexOf(service);
+        if (i > -1)
+          $scope.enabledServices.splice(i, 1);
+        else
+          $scope.enabledServices.push(service);
       };
 
       $scope.applyCrimeMapFilters = function(){
         //Update crimeMap
         $scope.updateCrimeWindowTime();
+      };
+
+      $scope.applyServicesFilters = function() {
+        // Remove previously added markers
+        for (var m = 0; m < $scope.markers.length; m++) {
+          $scope.markers[m].setMap(null);
+        }
+
+        for (var i = 0; i < $scope.enabledServices.length; i++) {
+          var serv = $scope.enabledServices[i];
+          loadServices($scope.services[serv], serv);
+        }
       };
 
       var getMapMarkers = function (array) {
@@ -255,11 +305,10 @@ angular.module('wheretoliveApp')
           var end = parseDate($scope.endRangeTime).replace(/\//g, '-');
           //Call to heatMap service
 
-        if ($scope.selection.length != 0){
+        if ($scope.enabledCrimes.length != 0){
           $scope.loading = true;
-          $log.debug($scope.selection);
-          //var string = $scope.selection.toString();
-          Search.searchCrimeNewsForDate($scope.selection.toString(), begin, end).success(function (heatmapRawData) {
+          //var string = $scope.enabledCrimes.toString();
+          Search.searchCrimeNewsForDate($scope.enabledCrimes.toString(), begin, end).success(function (heatmapRawData) {
             //Build map with the retrieved point
             var points = createMarkerWithOverlap(heatmapRawData.hits.hits);
             //Build a google MVC Array data structure from previously retrieved point
@@ -286,7 +335,8 @@ angular.module('wheretoliveApp')
       $scope.init = function () {
         $scope.loading = false; //show or hide the loading layer
         //$scope.searchCrimeNewsForDate();
-        $scope.selection= new Array();
+        $scope.enabledCrimes = new Array();
+        $scope.enabledServices = new Array();
         //Set time slider Date objects
         $scope.minCrimeTime = new Date('01-01-2014');
         $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
@@ -298,9 +348,10 @@ angular.module('wheretoliveApp')
         $scope.beginRangeTime = beginRange.getTime();
         $scope.endRangeTime = $scope.actualtimeDateObject;
 
-
+        // Take trace of manually added markers
+        $scope.markers = new Array();
 
         loadCrimesCheckBox();
-
+        loadServicesCheckBox();
       };
     }]);

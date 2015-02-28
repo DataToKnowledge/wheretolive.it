@@ -8,16 +8,19 @@
  * Controller of the wheretoliveApp
  */
 var app = angular.module('wheretoliveApp');
-app.controller('MainCtrl', ['$scope', function($scope){
+app.controller('MainCtrl', ['$scope',
+  function($scope) {
     $scope.awesomeThings = [
         'HTML5 Boilerplate',
         'AngularJS',
         'Karma'
     ];
 
-
-
-}]);
-
-
+    $scope.init = function() {
+      $('.nav a').on('click', function() {
+        $(".navbar-toggle").click();
+      });
+    };
+  }
+]);
 

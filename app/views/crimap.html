@@ -1,4 +1,4 @@
-<div class="row" ng-init="init()">
+<div class="container" ng-init="init()">
   <!--<div class="row">-->
   <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-10">-->
   <!--<form action="" class="form-horizontal" role="form">-->
@@ -21,12 +21,15 @@
       <p class="text-center">Applicazione dei filtri in corso, attendere...</p>
     </div>
   </div>
-  <div class="row-pad-15 text-center" style="margin-bottom: 20px">
-    <h3>Crime Map</h3>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+      <h1>Crime Map</h1>
+    </div>
   </div>
 
-  <div class="row-pad-15" style="margin-bottom: 20px">
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+  <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+    <div class="row">
       <slider
         ng-model="beginRangeTime"
         ng-model-range="endRangeTime"
@@ -39,42 +42,53 @@
         ng-mouseup="updateCrimeWindowTime()">
       </slider>
     </div>
-  </div>
-  <div class="row-pad-15">
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10" id="map">
-      <!--google-map center="map.center" zoom="map.zoom" draggable="true">
-        <markers models="markers" coords="'self'" doCluster=true click="'onClicked' ">
-        </markers>
-      </google-map-->
+    <div class="row">
+      <div id="map">
+      </div>
     </div>
-
-    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" style="padding: 15px">
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-          <p>
-            Filtra per crimine
-            <button
-              class="btn btn-info btn-sm"
-              ng-click="applyCrimeMapFilters()"
-              ng-disabled ="selection.length === 0">
-              Applica filtri
-            </button>
-          </p>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <p>Crimini da mostrare
+          <button class="btn btn-info btn-sm"
+                  ng-click="applyCrimeMapFilters()"
+                  ng-disabled="enabledCrimes.length === 0">
+                  Mostra
+          </button>
+        </p>
+        <div ng-repeat="crime in crimesList">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"
+                     value="{{crime}}"
+                     ng-checked="isActiveCrime(crime)"
+                     ng-click="updateCrimeMap(crime)">{{crime}}
+            </label>
+          </div>
         </div>
       </div>
-      <div class="row" style="height: 800px; overflow: scroll;">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="panel-body" ng-repeat="crime in crimesList" style="padding: 0">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox"
-                         value="{{crime}}"
-                         ng-checked="isActiveCrime(crime)"
-                         ng-click="updateCrimeMap(crime)">{{crime}}
-                </label>
-              </div>
-            </div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <p>Servizi da mostrare
+          <button class="btn btn-info btn-sm"
+                  ng-click="applyServicesFilters()"
+                  ng-disabled="enabledServices.length === 0">
+                  Mostra
+          </button>
+        </p>
+        <div ng-repeat="(service, prop) in services">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"
+                     value="{{service}}"
+                     ng-checked="isActiveService(service)"
+                     ng-click="updateServiceMap(service)">{{service}}
+            </label>
           </div>
+        </div>
       </div>
     </div>
   </div>
