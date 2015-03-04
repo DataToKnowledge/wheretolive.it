@@ -19,8 +19,6 @@ angular.module('wheretoliveApp')
       $scope.queryText;
     };
 
-
-
     /*
      ##############################################################
      ##                         PAGINATION                       ##
@@ -126,12 +124,5 @@ angular.module('wheretoliveApp')
         console.log("Numero risultati: " +  $scope.result );
       });
     };
-
-
-
-
-
-
-
   }]);
 

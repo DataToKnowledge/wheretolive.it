@@ -8,7 +8,9 @@
  * Service in the wheretoliveApp.
  */
 var app = angular.module('wheretoliveApp');
+
 app.service('Search', ['$http', function ($http) {
+
   var serverAddress='http://wheretolive.it:9200/wheretolive/_search';
 
   this.searchFullText = function (queryText, size, from) {

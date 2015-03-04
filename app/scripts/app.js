@@ -17,8 +17,6 @@ angular
     'ngSanitize',
     'ngTouch',
     'uiGmapgoogle-maps',
-    'angularCharts',
-    'angular-rickshaw',
     'ngAutocomplete',
     'vr.directives.slider'
   ])
