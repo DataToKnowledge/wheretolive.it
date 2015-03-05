@@ -11,7 +11,7 @@ var app = angular.module('wheretoliveApp');
 
 app.service('Search', ['$http', function ($http) {
 
-  var serverAddress='http://wheretolive.it:9200/wheretolive/_search';
+  var serverAddress='http://wheretolive.it:9200/wheretolive_v1/_search';
 
   this.searchFullText = function (queryText, size, from) {
     var queryAllMatch = {
@@ -123,15 +123,17 @@ app.service('Search', ['$http', function ($http) {
     console.log("getLastClosestNews with positions");
     var query = {
       "_source": [
-        "namedEntities",
+        "newspaper",
         "urlWebSite",
         "urlNews",
+        "imageLink",
         "title",
         "summary",
         "focusDate",
-        "focusLocation",
-        "imageLink",
-        "newspaper"
+        "cityName",
+        "crimes",
+        "relateds",
+        "geoLocation"
       ],
       "size": "",
       "from": "",
@@ -146,7 +148,7 @@ app.service('Search', ['$http', function ($http) {
         },
         {
           "_geo_distance": {
-            "focusLocation.geo_location": [],
+            "geoLocation": [],
             "order": "asc",
             "unit": "km"
           }
@@ -157,8 +159,8 @@ app.service('Search', ['$http', function ($http) {
 
     query.size = size;
     query.from = from;
-    query.sort[1]["_geo_distance"]["focusLocation.geo_location"][0] = position.coords.latitude;
-    query.sort[1]["_geo_distance"]["focusLocation.geo_location"][1] = position.coords.longitude;
+    query.sort[1]["_geo_distance"]["geoLocation"][0] = position.coords.latitude;
+    query.sort[1]["_geo_distance"]["geoLocation"][1] = position.coords.longitude;
     return $http.post(serverAddress, query).success(function (data) {
       return data;
     });
@@ -166,18 +168,19 @@ app.service('Search', ['$http', function ($http) {
   };
 
   this.getLastNews = function (size, from) {
-    console.log("getLastNews withOUT positions");
     var query = {
       "_source": [
-        "namedEntities",
+        "newspaper",
         "urlWebSite",
         "urlNews",
+        "imageLink",
         "title",
         "summary",
         "focusDate",
-        "focusLocation",
-        "imageLink",
-        "newspaper"
+        "cityName",
+        "crimes",
+        "relateds",
+        "geoLocation"
       ],
       "size": "",
       "from": "",

@@ -18,8 +18,17 @@ angular
     'ngTouch',
     'uiGmapgoogle-maps',
     'ngAutocomplete',
-    'vr.directives.slider'
+    'vr.directives.slider',
+    'elasticsearch',
+    'elasticui',
+    'angular.filter',
+    'angularMoment'
   ])
+  .constant('euiHost', 'http://wheretolive.it:9200')
+  .constant('angularMomentConfig', {
+    preprocess: 'unix', // optional
+    timezone: 'Europe/Rome' // optional
+  })
   //Log provider configuration
   .config(function($logProvider){
     $logProvider.debugEnabled(true);
@@ -57,6 +66,10 @@ angular
       .when('/tips', {
         templateUrl: 'views/tips.html',
         controller: 'TipsCtrl'
+      })
+      .when('/newsfeed', {
+        templateUrl: 'views/newsfeed.html',
+        controller: 'NewsfeedCtrl'
       })
       .otherwise({
         redirectTo: '/'

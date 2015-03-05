@@ -171,8 +171,8 @@ angular.module('wheretoliveApp')
           // 2.1 array.contains(e) inserisco un marker in posizione newLat= iLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
           //        ed aggiorno mapMarkers con newLat e newLon
           // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
-          if(jsonData[i]._source.focusLocation !=undefined) {
-            var coords = jsonData[i]._source.focusLocation.geo_location.split(",");
+          if(jsonData[i]._source.geoLocation !=undefined) {
+            var coords = jsonData[i]._source.geoLocation.split(",");
             var iLat = coords[0].trim();
             var mapMarkArray = mapMarkers[iLat];
             var iLon = coords[1].trim();

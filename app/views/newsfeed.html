@@ -1,6 +1,6 @@
-<div class="row" data-ng-init="init()">
+<div class="row">
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 scrollit">
-    <section class="post" ng-repeat="news in newsArray" id="{{news._id}}">
+    <section class="post" ng-repeat="news in indexVM.results.hits.hits" id="{{news._id}}">
       <header class="entry-header row">
         <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
             <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
@@ -14,7 +14,7 @@
             Pubblicata il <a class="entry-date">{{news._source.focusDate}}</a>
             | <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news._source.newspaper}}</a>
             <span ng-show="news._source.crimes.length > 0">| Crimini:</span>
-            <span ng-repeat="crime in news._source.crimes | unique ">
+            <span  ng-repeat="crime in news._source.crimes | unique ">
               <span class="label label-default topic-name">{{crime}} </span>
             </span>
 
@@ -23,8 +23,6 @@
               <span class="label label-default topic-name">{{related}} </span>
             </span>
           </p>
-
-          </p>
         </div>
       </header>
       <div class="entry-description">
@@ -32,23 +30,8 @@
       </div>
     </section>
     <!-- /.post -->
+    <eui-simple-paging></eui-simple-paging>
 
-
-    <div class="row row-centered">
-      <ul class="pagination">
-        <li ng-hide="disablePrevPage()">
-          <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
-        </li>
-        <li ng-repeat="n in paginationGetRange()"
-            ng-class="{active: n == paginationCurrentPage}">
-          <a href ng-click="updateSearch(n)">{{n+1}}</a>
-        </li>
-        <li ng-hide="disableNextPage()">
-          <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
-        </li>
-
-      </ul>
-    </div>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <div class="col-lg-6 fixed" style="padding-top: 15px;">
