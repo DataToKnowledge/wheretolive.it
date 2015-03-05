@@ -130,31 +130,11 @@ angular.module('wheretoliveApp')
        */
 
       /**
-       * Helper function which help to handle date format
-       * @param date
-       * @returns {*}
-       */
-      var parseDate = function (date){
-        var dateObj = new Date(parseInt(date));
-        return dateObj.toLocaleDateString('it-IT');
-      };
-
-      /**
        * Parse provided date (in unix timestamp format)
        * and return human formatted date
        */
-      $scope.humanDate = function(date){
-        var dateToConvert = new Date(parseInt(date));
-        return dateToConvert.toLocaleDateString();
-      };
-
-
-      /**
-       * Parse provided range into human readable form
-       */
-      $scope.humanRange = function(lowBound,highBound,range){
-        $log.debug('lowBound');
-        return '';
+      $scope.toHumanDate = function(date) {
+        return new Date(parseInt(date)).toLocaleDateString('it-IT');
       };
 
       $scope.updateCrimeMap = function(crime){
@@ -300,11 +280,17 @@ angular.module('wheretoliveApp')
        */
       $scope.updateCrimeWindowTime = function() {
 
-          //Convert unixTime to human readable time
-          var begin = parseDate($scope.beginRangeTime).replace(/\//g, '-');
-          var end = parseDate($scope.endRangeTime).replace(/\//g, '-');
-          //Call to heatMap service
+        //Convert unixTime to human readable time
+        var startDate = new Date($scope.startDate);
+        var begin = startDate.getDate() + '-';
+        begin += (startDate.getMonth() + 1) + '-';
+        begin += startDate.getFullYear();
+        var endDate = new Date($scope.endDate);
+        var end = endDate.getDate() + '-';
+        end += (endDate.getMonth() + 1) + '-';
+        end += endDate.getFullYear();
 
+        //Call to heatMap service
         if ($scope.enabledCrimes.length != 0){
           $scope.loading = true;
           //var string = $scope.enabledCrimes.toString();
@@ -334,19 +320,14 @@ angular.module('wheretoliveApp')
 
       $scope.init = function () {
         $scope.loading = false; //show or hide the loading layer
-        //$scope.searchCrimeNewsForDate();
         $scope.enabledCrimes = new Array();
         $scope.enabledServices = new Array();
-        //Set time slider Date objects
-        $scope.minCrimeTime = new Date('01-01-2014');
-        $scope.minCrimeTimeObject = $scope.minCrimeTime.getTime(); //time slider start date
-        $scope.curTime = $scope.minCrimeTimeObject; //initialize slider to floor of range
-        $scope.actualtimeDateObject = Date.now(); //time slider end date
-        //Setup knob bounds (i.e. posizione delle pallozze)
-        var beginRange = new Date(Date.now());
-        beginRange.setMonth(-1);
-        $scope.beginRangeTime = beginRange.getTime();
-        $scope.endRangeTime = $scope.actualtimeDateObject;
+
+        // Set time slider values
+        $scope.initialRangeDate = new Date('01/01/2014').getTime();
+        $scope.startDate = new Date().setMonth(new Date().getMonth() - 1);
+        $scope.endDate = Date.now();
+        $scope.finalRangeDate = Date.now();
 
         // Take trace of manually added markers
         $scope.markers = new Array();

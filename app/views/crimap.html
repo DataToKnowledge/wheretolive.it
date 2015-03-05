@@ -30,16 +30,14 @@
 
   <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
     <div class="row">
-      <slider
-        ng-model="beginRangeTime"
-        ng-model-range="endRangeTime"
-        floor="{{minCrimeTimeObject}}"
-        step-width="86400000"
-        ceiling="{{actualtimeDateObject}}"
-        translate-fn="humanDate"
-        translate-range-fn="humanRange"
-        buffer="86400000"
-        ng-mouseup="updateCrimeWindowTime()">
+      <slider ng-model="startDate"
+              ng-model-range="endDate"
+              floor="{{initialRangeDate}}"
+              ceiling="{{finalRangeDate}}"
+              buffer="86400000"
+              translate-fn="toHumanDate"
+              translate-range-fn="toHumanDate"
+              ng-mouseup="updateCrimeWindowTime()">
       </slider>
     </div>
     <div class="row">
