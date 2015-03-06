@@ -92,7 +92,7 @@ angular.module('wheretoliveApp')
           success(function(data, status, headers, config) {
             var crimeArray =  new Array();
             //var crimesJson = data.toArray().slice(0,20);
-            for (var p = 0; p < 20; p++) {
+            for (var p = 0; p < 25; p++) {
               crimeArray.push(data[p].crimine);
             }
             $scope.crimesList=crimeArray;
@@ -212,8 +212,8 @@ angular.module('wheretoliveApp')
             // 2.2 !array.contains(e) aggiorno mapMarkers[kLat], aggiungendo e
 
 
-          if(jsonData[i]._source["focusLocation"]!=undefined) {
-            var coords = jsonData[i]._source.focusLocation.geo_location.split(",");
+          if(jsonData[i]._source["geoLocation"]!=undefined) {
+            var coords = jsonData[i]._source.geoLocation.split(",");
             var kLat = parseFloat(coords[0]).toFixed(7);
             var lon = parseFloat(coords[1]).toFixed(7);
             if (mapMarkers[kLat] == undefined) {

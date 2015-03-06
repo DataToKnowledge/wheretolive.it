@@ -3,14 +3,14 @@
     <div class="panel panel-default">
       <div class="panel-heading">Filtra per Crimine</div>
       <div class="panel-body">
-        <eui-checklist field="'crimes'" size="10"></eui-checklist>
+        <eui-checklist field="'crimes'" size="15"></eui-checklist>
       </div>
     </div>
 
     <div class="panel panel-default">
       <div class="panel-heading">Filtra per Giustizia</div>
       <div class="panel-body">
-        <eui-checklist field="'relateds'" size="10"></eui-checklist>
+        <eui-checklist field="'relateds'" size="15"></eui-checklist>
       </div>
     </div>
 
@@ -31,11 +31,11 @@
     <div class="panel panel-default">
       <div class="panel-heading">Filtra per Organizzazioni</div>
       <div class="panel-body">
-        <eui-checklist field="'organizations'" size="10"></eui-checklist>
+        <eui-checklist field="'organizations'" size="15"></eui-checklist>
       </div>
     </div>
-
   </div>
+
   <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
 
     <div class="row">
@@ -64,7 +64,7 @@
     <div class="row">
       <section class="post" ng-repeat="news in indexVM.results.hits.hits" id="{{news._id}}">
         <div class="row">
-          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+          <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
             <header class="entry-header">
               <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
                   <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
@@ -77,23 +77,48 @@
                 Pubblicata il <a class="entry-date">{{news._source.focusDate}}</a>
                 | <a class="entry-author" href={{news._source.urlWebSite}}
                      target="_blank">{{news._source.newspaper}}</a>
-                <span ng-show="news._source.crimes.length > 0">| Crimini:</span>
-            <span ng-repeat="crime in news._source.crimes | unique ">
-              <span class="label label-default topic-name">{{crime}} </span>
-            </span>
-
-                <span ng-show="news._source.relateds.length > 0">| Giustizia:</span>
-            <span ng-repeat="related in news._source.relateds | unique ">
-              <span class="label label-default topic-name">{{related}} </span>
-            </span>
-              </p>
             </header>
             <div class="entry-description">
               <p class="text-justify">{{news._source.summary}} </p>
             </div>
           </div>
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <!--qui va il tag glocu-->
+          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+            <!--&lt;!&ndash;qui va il tag glocu&ndash;&gt;-->
+            <span ng-show="news._source.crimes.length > 0">Crimini:</span>
+            <span ng-repeat="crime in news._source.crimes | unique ">
+              <span class="label label-default topic-name">{{crime}} </span>
+            </span>
+            </p>
+            <p>
+              <span ng-show="news._source.relateds.length > 0">Giustizia:</span>
+            <span ng-repeat="related in news._source.relateds | unique | limitTo : 8 : 0 ">
+              <span class="label label-default topic-name">{{related}} </span>
+            </span>
+            </p>
+            <p>
+              <span ng-show="news._source.persons.length > 0">Persone:</span>
+            <span ng-repeat="person in news._source.persons | unique | limitTo : 8 : 0  ">
+              <span class="label label-default topic-name">{{person}} </span>
+            </span>
+            </p>
+            <p>
+              <span ng-show="news._source.locations.length > 0">Luoghi:</span>
+            <span ng-repeat="location in news._source.locations | unique | limitTo : 8 : 0  ">
+              <span class="label label-default topic-name">{{location}} </span>
+            </span>
+            </p>
+            <p>
+              <span ng-show="news._source.geopoliticals.length > 0">Entit&agrave; di Wikipedia:</span>
+            <span ng-repeat="geopolitical in news._source.geopoliticals | unique | limitTo : 8 : 0  ">
+              <span class="label label-default topic-name">{{geopolitical}} </span>
+            </span>
+            </p>
+            <p>
+              <span ng-show="news._source.organizations.length > 0">Enti:</span>
+            <span ng-repeat="geopolitical in news._source.organizations | unique | limitTo : 8 : 0  ">
+              <span class="label label-default topic-name">{{geopolitical}} </span>
+            </span>
+            </p>
           </div>
         </div>
       </section>

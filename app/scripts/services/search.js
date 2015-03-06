@@ -11,20 +11,20 @@ var app = angular.module('wheretoliveApp');
 
 app.service('Search', ['$http', function ($http) {
 
-  var serverAddress='http://wheretolive.it:9200/wheretolive_v1/_search';
+  var serverAddress = 'http://wheretolive.it:9200/wheretolive_v1/_search';
 
   this.searchFullText = function (queryText, size, from) {
     var queryAllMatch = {
       "size": "10",
       "from": "0",
       "_source": [
-        "namedEntities",
+        "crimes",
         "urlWebSite",
         "urlNews",
         "title",
         "summary",
         "focusDate",
-        "focusLocation",
+        "geoLocation",
         "imageLink",
         "newspaper",
         "tags"
@@ -48,7 +48,7 @@ app.service('Search', ['$http', function ($http) {
     return $http.post(serverAddress, queryAllMatch).success(function (data) {
       return data;
     }).error(function (data, status, headers, config) {
-      console.log("Error "+data);
+      console.log("Error " + data);
     });
   };
 
@@ -56,21 +56,16 @@ app.service('Search', ['$http', function ($http) {
    * Used in crimap.js to find all news about crimes
    * @returns {*}
    */
-  this.searchCrimeNewsForDate = function(crimesList,startData, endData){
+  this.searchCrimeNewsForDate = function (crimesList, startData, endData) {
 
     var query = {
-      "size":1000,
-      "_source":["focusLocation"],
+      "size": 8000,
+      "_source": ["geoLocation"],
       "query": {
         "filtered": {
           "query": {
-            "nested": {
-              "path": "namedEntities",
-              "query": {
-                "match": {
-                  "crimeStems": ""
-                }
-              }
+            "match": {
+              "crimes": ""
             }
           },
           "filter": {
@@ -85,14 +80,9 @@ app.service('Search', ['$http', function ($http) {
                   }
                 },
                 {
-                  "nested": {
-                    "path": "focusLocation",
-                    "filter": {
-                      "geo_distance": {
-                        "distance": "100km",
-                        "geo_location": "41,16"
-                      }
-                    }
+                  "geo_distance": {
+                    "distance": "1000km",
+                    "geoLocation": "41,16"
                   }
                 }
               ]
@@ -102,20 +92,20 @@ app.service('Search', ['$http', function ($http) {
       }
     };
 
-      query.query.filtered.filter.and.filters[0]["range"].focusDate.gte = startData;
-      query.query.filtered.filter.and.filters[0]["range"].focusDate.lte = endData;
-      query.query.filtered.query.nested.query.match.crimeStems = crimesList;
-      //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
-      //console.log(query);
+    query.query.filtered.filter.and.filters[0]["range"].focusDate.gte = startData;
+    query.query.filtered.filter.and.filters[0]["range"].focusDate.lte = endData;
+    query.query.filtered.query.match.crimes = crimesList;
+    //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
+    console.log(JSON.stringify(query));
 
-      return $http.post(serverAddress, query).success(function (data) {
+    return $http.post(serverAddress, query).success(function (data) {
+      console.log(data.length);
+      return data;
+    }).
+      error(function (data, status, headers, config) {
         console.log(data);
-        return data;
-      }).
-        error(function (data, status, headers, config) {
-          console.log(data);
-        }
-      );
+      }
+    );
 
   };
 
@@ -198,21 +188,19 @@ app.service('Search', ['$http', function ($http) {
 
     query.size = size;
     query.from = from;
-    return $http.post(serverAddress, query).success(function(data, status, headers, config) {
-      console.log(data, status );
+    return $http.post(serverAddress, query).success(function (data, status, headers, config) {
+      console.log(data, status);
       return data;
     }).
-      error(function(data, status, headers, config) {
+      error(function (data, status, headers, config) {
         // called asynchronously if an error occurs
         // or server returns response with an error status.
         console.log("Error!!");
-        console.log("Data:"+data+"\n Status:"+status+"\n Header: "+headers+"\n Config "+config);
+        console.log("Data:" + data + "\n Status:" + status + "\n Header: " + headers + "\n Config " + config);
       });
 
 
   };
-
-
 
 
   this.searchInNLPTags = function (query, size, from) {
@@ -357,7 +345,7 @@ app.service('Search', ['$http', function ($http) {
    * @param city
    * USATA
    */
-  this.countCrimes = function(city){
+  this.countCrimes = function (city) {
     var query = {
       "query": {
         "filtered": {
@@ -379,10 +367,10 @@ app.service('Search', ['$http', function ($http) {
         }
       },
       "size": 0,
-      "aggs" : {
-        "crimes_count" : {
-          "terms" : {
-            "field" : "crime",
+      "aggs": {
+        "crimes_count": {
+          "terms": {
+            "field": "crime",
             "size": 10
           }
         }
@@ -508,10 +496,10 @@ app.service('Search', ['$http', function ($http) {
         }
       },
       "size": 0,
-      "aggs" : {
-        "crimes" : {
-          "terms" : {
-            "field" : "urlWebsite",
+      "aggs": {
+        "crimes": {
+          "terms": {
+            "field": "urlWebsite",
             "size": 100
           }
         }
@@ -523,7 +511,7 @@ app.service('Search', ['$http', function ($http) {
     return $http.post(serverAddress, query);
   };
 
-  this.topCrime = function(city){
+  this.topCrime = function (city) {
 
     var query = {
       "query": {
@@ -546,10 +534,10 @@ app.service('Search', ['$http', function ($http) {
         }
       },
       "size": 0,
-      "aggs" : {
-        "crime_histograms" : {
-          "terms" : {
-            "field" : "crime",
+      "aggs": {
+        "crime_histograms": {
+          "terms": {
+            "field": "crime",
             "size": 50
           }
         }
@@ -560,7 +548,7 @@ app.service('Search', ['$http', function ($http) {
     return $http.post(serverAddress, query);
   };
 
-  this.topJournal = function(city) {
+  this.topJournal = function (city) {
 
     var query = {
       "query": {
@@ -583,10 +571,10 @@ app.service('Search', ['$http', function ($http) {
         }
       },
       "size": 0,
-      "aggs" : {
-        "top_journal" : {
-          "terms" : {
-            "field" : "urlWebsite",
+      "aggs": {
+        "top_journal": {
+          "terms": {
+            "field": "urlWebsite",
             "size": 50
           }
         }
@@ -597,7 +585,7 @@ app.service('Search', ['$http', function ($http) {
     return $http.post(serverAddress, query);
   };
 
-  this.topCrimesPerDay = function(city) {
+  this.topCrimesPerDay = function (city) {
     var query = {
       "query": {
         "filtered": {
@@ -619,10 +607,10 @@ app.service('Search', ['$http', function ($http) {
         }
       },
       "size": 0,
-      "aggs" : {
-        "crime_top" : {
-          "terms" : {
-            "field" : "crime",
+      "aggs": {
+        "crime_top": {
+          "terms": {
+            "field": "crime",
             "size": 50
           },
           "aggs": {
@@ -630,7 +618,7 @@ app.service('Search', ['$http', function ($http) {
               "date_histogram": {
                 "field": "date",
                 "interval": "month",
-                "format" : "MM-yyyy",
+                "format": "MM-yyyy",
                 "order": {
                   "_key": "desc"
                 }
@@ -651,7 +639,7 @@ app.service('Search', ['$http', function ($http) {
    * @param  from - Date
    * @param  to - Date
    */
-  this.crimePerTimeWindow = function(from,to){
+  this.crimePerTimeWindow = function (from, to) {
     // Viene aggiunta una unita' al mese poiché per un motivo inspiegabile i mesi in javascript vanno da
     // 0 a 11
     var fromDate = (from.getMonth() + 1) + '-' + from.getDate() + '-' + from.getFullYear();
