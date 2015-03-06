@@ -45,7 +45,7 @@
         <div class="input-group">
           <input type="text" class="form-control" placeholder="cerca in titolo, sommario e testo delle news"
                  name="srch-term" id="srch-term"
-                 eui-query="ejs.MultiMatchQuery(['title', 'summary', 'corpus'], querystring)"
+                 eui-query="ejs.MultiMatchQuery(['title', 'summary', 'corpus'], querystring).type('most_fields').fuzziness(0.4)"
                  ng-model="querystring" eui-enabled="querystring.length">
 
           <!--query with all the attributes-->
