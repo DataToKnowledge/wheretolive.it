@@ -14,4 +14,11 @@ angular.module('wheretoliveApp')
       'AngularJS',
       'Karma'
     ];
-  }]);
+
+  $scope.init = function () {
+    $('#segnala').on('click', function() {
+      $('#inviata').show();
+    });
+  }
+
+}]);
