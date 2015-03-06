@@ -11,6 +11,7 @@ var app = angular.module('wheretoliveApp');
 
 app.service('Search', ['$http', function ($http) {
 
+  var oldServerAddress='http://wheretolive.it:9200/wheretolive/_search';
   var serverAddress='http://wheretolive.it:9200/wheretolive_v1/_search';
 
   this.searchFullText = function (queryText, size, from) {
@@ -108,7 +109,7 @@ app.service('Search', ['$http', function ($http) {
       //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
       //console.log(query);
 
-      return $http.post(serverAddress, query).success(function (data) {
+      return $http.post(oldServerAddress, query).success(function (data) {
         console.log(data);
         return data;
       }).
