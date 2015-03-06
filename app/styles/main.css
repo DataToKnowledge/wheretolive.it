@@ -1,4 +1,103 @@
 /* Space out content a bit */
+
+#cloudRecord{
+  margin-left: -2em;
+}
+
+ul.tags li {
+  float: left;
+  margin: 2px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 2px 5px;
+  background: #add9e4;
+  background: -moz-linear-gradient(top, #add9e4 0%, #e1edef 50%, #add9e4 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #add9e4), color-stop(50%, #e1edef), color-stop(100%, #add9e4));
+  background: -webkit-linear-gradient(top, #add9e4 0%, #e1edef 50%, #add9e4 100%);
+  background: -o-linear-gradient(top, #add9e4 0%, #e1edef 50%, #add9e4 100%);
+  background: -ms-linear-gradient(top, #add9e4 0%, #e1edef 50%, #add9e4 100%);
+  background: linear-gradient(to bottom, #add9e4 0%, #e1edef 50%, #add9e4 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#add9e4', endColorstr='#add9e4', GradientType=0);
+}
+
+ul.tags li a {
+  color: black;
+}
+
+ul.tags.small {
+  margin: 0;
+}
+
+ul.tags.small li {
+  font-size: 10px;
+  line-height: 16px;
+  padding: 0 3px;
+}
+
+#theCloud {
+  margin: 0 auto;
+  line-height: 1.2em;
+  text-align: center;
+}
+
+#theCloud li {
+  display: inline-block;
+  margin: 2px;
+}
+
+#theCloud li.tiny {
+  font-size: 0.9em;
+  font-weight: 100;
+}
+
+#theCloud li.tiny a, #theCloud li.tiny a:visited, #theCloud li.tiny a:active {
+  color: #333333;
+}
+
+#theCloud li.small {
+  font-size: 1.1em;
+  font-weight: 300;
+}
+
+#theCloud li.small a, #theCloud li.small a:visited, #theCloud li.small a:active {
+  color: green;
+}
+
+#theCloud li.medium {
+  font-size: 1.5em;
+  font-weight: 500;
+}
+
+#theCloud li.medium a, #theCloud li.medium a:visited, #theCloud li.medium a:active {
+  color: purple;
+}
+
+#theCloud li.big {
+  font-size: 1.9em;
+  font-weight: 700;
+}
+
+#theCloud li.big a, #theCloud li.big a:visited, #theCloud li.big a:active {
+  color: orange;
+}
+
+#theCloud li.huge {
+  font-size: 2.4em;
+  font-weight: 900;
+  line-height: 0.8em;
+}
+
+#theCloud li.huge a, #theCloud li.huge a:visited, #theCloud li.huge a:active {
+  color: blue;
+}
+
+#theCloud li a:hover {
+  color: red !important;
+}
+
 .topic-name {
   position: relative;
   display: inline-block;
@@ -6,8 +105,14 @@
   letter-spacing: 0.08em;
 }
 
+.nav > li {
+  position: relative;
+  display: block;
+  padding-left: 10px;
+}
+
 body {
-    padding-top: 70px;
+    padding-top: 20px;
     padding-bottom: 20px;
     background: #F2F2F2;
     height: 100%;

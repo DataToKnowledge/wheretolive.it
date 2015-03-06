@@ -71,6 +71,10 @@ angular
         templateUrl: 'views/newsfeed.html',
         controller: 'NewsfeedCtrl'
       })
+      .when('/facetSearch', {
+        templateUrl: 'views/facetsearch.html',
+        controller: 'FacetsearchCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
