@@ -10,7 +10,7 @@
 angular.module('wheretoliveApp')
   .service('esService', function (esFactory) {
     return esFactory({
-      host: 'wheretolive.it:9200',
+      host: 'wheretolive.it:59200',
       log: 'trace'
     });
   });

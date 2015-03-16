@@ -11,7 +11,7 @@ var app = angular.module('wheretoliveApp');
 
 app.service('Search', ['$http', function ($http) {
 
-  var serverAddress = 'http://wheretolive.it:9200/wheretolive_v1/_search';
+  var serverAddress = 'http://wheretolive.it:59200/wheretolive_v1/_search';
 
   this.searchFullText = function (queryText, size, from) {
     var queryAllMatch = {
