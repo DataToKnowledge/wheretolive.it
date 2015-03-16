@@ -24,7 +24,7 @@ angular
     'angular.filter',
     'angularMoment'
   ])
-  .constant('euiHost', 'http://wheretolive.it:9200')
+  .constant('euiHost', 'http://wheretolive.it:59200')
   .constant('angularMomentConfig', {
     preprocess: 'unix', // optional
     timezone: 'Europe/Rome' // optional
