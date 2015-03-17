@@ -56,7 +56,7 @@ app.service('Search', ['$http', function ($http) {
    * Used in crimap.js to find all news about crimes
    * @returns {*}
    */
-  this.searchCrimeNewsForDate = function (crimesList, startData, endData) {
+  this.searchCrimeNewsForDate = function (crimesList, startDate, endDate) {
 
     var query = {
       "size": 8000,
@@ -65,7 +65,7 @@ app.service('Search', ['$http', function ($http) {
         "filtered": {
           "query": {
             "match": {
-              "crimes": ""
+              "crimes": crimesList
             }
           },
           "filter": {
@@ -74,8 +74,8 @@ app.service('Search', ['$http', function ($http) {
                 {
                   "range": {
                     "focusDate": {
-                      "gte": "01-10-2014",
-                      "lte": "now"
+                      "gte": startDate,
+                      "lte": endDate
                     }
                   }
                 },
@@ -92,14 +92,9 @@ app.service('Search', ['$http', function ($http) {
       }
     };
 
-    query.query.filtered.filter.and.filters[0]["range"].focusDate.gte = startData;
-    query.query.filtered.filter.and.filters[0]["range"].focusDate.lte = endData;
-    query.query.filtered.query.match.crimes = crimesList;
-    //query.query.filter.and.filters[1]["geo_distance"].positions.lan=
-    console.log(JSON.stringify(query));
+    //console.log(JSON.stringify(query));
 
     return $http.post(serverAddress, query).success(function (data) {
-      console.log(data.length);
       return data;
     }).
       error(function (data, status, headers, config) {
