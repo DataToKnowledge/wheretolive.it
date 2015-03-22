@@ -75,6 +75,10 @@ angular
         templateUrl: 'views/facetsearch.html',
         controller: 'FacetsearchCtrl'
       })
+      .when('/stream', {
+        templateUrl: 'views/networkstream.html',
+        controller: 'NetworkstreamCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
