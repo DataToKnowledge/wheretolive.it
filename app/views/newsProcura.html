@@ -1,0 +1,81 @@
+<div class="row" data-ng-init="init()">
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 scrollit">
+    <section class="post" ng-repeat="dataProcura in data" id="{{news._id}}">
+      <header class="entry-header row">
+        <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+            <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
+        </div-->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <h3 class="entry-title">
+            <a target="_blank">{{dataProcura.title}}</a>
+          </h3>
+
+          <p class="entry-meta">
+            Reato avvenuto il <a class="entry-date">{{dataProcura.date}}</a> ore <a class="entry-date">{{dataProcura.time}}</a>
+            </br>in <a class="entry-date">{{dataProcura.address}}</a>, <a class="entry-date">{{dataProcura.city}}</a>
+          </p>
+          <table class="table table-striped table-bordered table-hover table-condensed">
+            <thead>
+            <tr>
+              <th></th>
+              <th>Sesso</th>
+              <th>Età</th>
+              <th>Nazionalità</th>
+              <th>Precedenti</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th>Autore</th>
+              <td>{{dataProcura.perpetrator.gender}}</td>
+              <td>{{dataProcura.perpetrator.age}}</td>
+              <td>{{dataProcura.perpetrator.nationality}}</td>
+              <td>{{dataProcura.perpetrator.crimeRecord}}</td>
+            </tr>
+            <tr>
+              <th>Vittima</th>
+              <td>{{dataProcura.victim.gender}}</td>
+              <td>{{dataProcura.victim.age}}</td>
+              <td>{{dataProcura.victim.nationality}}</td>
+              <td>{{dataProcura.victim.crimeRecord}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </header>
+    </section>
+    <!-- /.post -->
+
+
+    <div class="row row-centered">
+      <ul class="pagination">
+        <li ng-hide="disablePrevPage()">
+          <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
+        </li>
+        <li ng-repeat="n in paginationGetRange()"
+            ng-class="{active: n == paginationCurrentPage}">
+          <a href ng-click="updateSearch(n)">{{n+1}}</a>
+        </li>
+        <li ng-hide="disableNextPage()">
+          <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <div class="col-lg-6 fixed" style="padding-top: 15px;">
+      <ui-gmap-google-map options="map.options" center="map.center" zoom="map.zoom" draggable="true">
+        <ui-gmap-markers models="markers" coords="'self'" doCluster=true clusterOptions="{maxZoom:13}"
+                         click="'onClicked'" options="'options'" events="markersEvents">
+        </ui-gmap-markers>
+      </ui-gmap-google-map>
+    </div>
+  </div>
+</div>
+<span id="top-link-block" class="row">
+  <a href="#top" class="well well-sm"
+     onclick="$('html,body, div.scrollit').animate({scrollTop:0},'slow');return false;">
+    <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+  </a>
+</span>

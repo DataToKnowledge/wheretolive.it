@@ -43,6 +43,10 @@ angular
         templateUrl: 'views/news.html',
         controller: 'NewsCtrl'
       })
+      .when('/newsProcura', {
+        templateUrl: 'views/newsProcura.html',
+        controller: 'NewsProcuraCtrl'
+      })
       .when('/crimap', {
         templateUrl: 'views/crimap.html',
         controller: 'CrimapCtrl'
