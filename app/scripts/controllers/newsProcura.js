@@ -9,12 +9,15 @@
  */
 var app = angular.module('wheretoliveApp');
 
-/*app.filter('offset', function() {
-  return function(input, start) {
-    start = parseInt(start, 10);
-    return input.slice(start);
+app.filter('offset', function() {
+  return function(input, offset) {
+    //start = parseInt(start, 10);
+    //return input.slice(start);
+    return (input instanceof Array)
+      ? input.slice(+offset)
+      : input
   };
-});*/
+});
 
 app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope, Search, $http) {
 
@@ -24,8 +27,8 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
    ##############################################################
    */
   $scope.paginationCurrentPage = 0;
-  var paginationPageSize = 10;
-  var paginationPageCount = Math.ceil($scope.results / paginationPageSize) - 1;
+  $scope.paginationPageSize = 10;
+  var paginationPageCount = Math.ceil($scope.results / $scope.paginationPageSize) - 1;
 
   $scope.prova = 0;
 
@@ -45,7 +48,6 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
         ps.push(i);
 
     }
-    // console.log("Entrato in range()", ps);
     return ps;
 
   };
@@ -68,8 +70,11 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
 
   $scope.updateSearch = function (newPage) {
     paginationSetCurrentPage(newPage);
-    getLatestNews();
     $('html,body, div.scrollit').animate({scrollTop: 0}, 'slow')
+  };
+
+  $scope.getOffset = function(currentPage) {
+    return currentPage * $scope.paginationPageSize;
   };
 
 
@@ -84,8 +89,8 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
       longitude: '16.869020'
     },
     options: {
-      maxZoom: 14,
-      minZoom: 8,
+      //maxZoom: 14,
+      //minZoom: 8,
       streetViewControl: false
     },
     zoom: 8,
@@ -109,7 +114,6 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
 
         //se esiste una posizione le ultime news verranno anche ordinate per distanza rispetto a position
         paginationSetCurrentPage(0);
-        getLatestNews();
       });
     }, function (error) {
       console.log('error get position', error);
@@ -133,35 +137,6 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
         $('html,body, div.scrollit').animate({scrollTop: $("#" + idNews).offset().top - 150}, 'slow');
         lastMarkerIdHighlight = idNews;
       }
-    }
-  };
-
-  var getLatestNews = function () {
-    var from = paginationPageSize * $scope.paginationCurrentPage;
-    if ($scope.position == undefined) {
-
-      Search.getLastNews(paginationPageSize, from).then(function (data) {
-        $scope.newsArray = data.data.hits.hits;
-        $scope.results = data.data.hits.total;
-        console.log("News", $scope.newsArray);
-
-        var markers = createMarkerWithOverlap($scope.newsArray);
-        $scope.markers = markers;
-
-
-      });
-    } else {
-
-      Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
-        $scope.newsArray = data.data.hits.hits;
-        $scope.results = data.data.hits.total;
-        console.log("News", $scope.newsArray);
-
-        var markers = createMarkerWithOverlap($scope.newsArray);
-        $scope.markers = markers;
-
-
-      });
     }
   };
 
@@ -250,7 +225,7 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
         }
 
       }else{
-        console.log("News "+i+" non ha coordinate");
+        //console.log("News "+i+" non ha coordinate");
       }
 
     }
@@ -264,80 +239,67 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
       var file = response.data.split("\n");
       var data = new Array();
       for(var i = 0; i < file.length; i++){
-          var robj = {};
-          var victim = {};
-          var perpetrator = {};
-          var geoLocation = {};
+        var robj = {};
+        var victim = {};
+        var perpetrator = {};
+        var geoLocation = {};
 
-          var splits = file[i].split("\t");
-          robj["_id"] = i;
-          robj["title"] = splits[0];
-          robj["crimes"] = splits[1];
-          robj["city"] = splits[2];
-          robj["address"] = splits[3];
-          robj["date"] = splits[4];
-          robj["time"] = splits[5];
+        var splits = file[i].split("\t");
+        robj["_id"] = i;
+        robj["title"] = splits[0];
+        robj["crimes"] = splits[1];
+        robj["city"] = splits[2];
+        robj["address"] = splits[3];
+        robj["date"] = splits[4];
+        robj["time"] = splits[5];
 
-          victim["gender"] = splits[6];
-          victim["age"] = splits[7];
-          victim["nationality"] = splits[8];
-          victim["crimeRecord"] = splits[9];
+        victim["gender"] = splits[6];
+        victim["age"] = splits[7];
+        victim["nationality"] = splits[8];
+        victim["crimeRecord"] = splits[9];
 
-          perpetrator["gender"] = splits[10];
-          perpetrator["age"] = splits[11];
-          perpetrator["nationality"] = splits[12];
-          perpetrator["crimeRecord"] = splits[13];
-          geoLocation["latitude"] = splits[14];
-          geoLocation["longitude"] = splits[15];
-          robj["victim"] = victim;
-          robj["perpetrator"]  = perpetrator;
-          robj["geoLocation"] = geoLocation;
+        perpetrator["gender"] = splits[10];
+        perpetrator["age"] = splits[11];
+        perpetrator["nationality"] = splits[12];
+        perpetrator["crimeRecord"] = splits[13];
+        geoLocation["latitude"] = splits[14];
+        geoLocation["longitude"] = splits[15];
+        robj["victim"] = victim;
+        robj["perpetrator"]  = perpetrator;
+        robj["geoLocation"] = geoLocation;
 
-          data.push(robj);
+        data.push(robj);
       }
-      //var data = response.data.split("\n").map( function(row) {
-      //  var robj = {};
-      //  var victim = {};
-      //  var perpetrator = {};
-      //  var geoLocation = {};
-      //
-      //  var splits = row.split("\t");
-      //  robj["title"] = splits[0];
-      //  robj["crimes"] = splits[1];
-      //  robj["city"] = splits[2];
-      //  robj["address"] = splits[3];
-      //  robj["date"] = splits[4];
-      //  robj["time"] = splits[5];
-      //
-      //  victim["gender"] = splits[6];
-      //  victim["age"] = splits[7];
-      //  victim["nationality"] = splits[8];
-      //  victim["crimeRecord"] = splits[9];
-      //
-      //  perpetrator["gender"] = splits[10];
-      //  perpetrator["age"] = splits[11];
-      //  perpetrator["nationality"] = splits[12];
-      //  perpetrator["crimeRecord"] = splits[13];
-      //  geoLocation["latitude"] = splits[14];
-      //  geoLocation["longitude"] = splits[15];
-      //  robj["victim"] = victim;
-      //  robj["perpetrator"]  = perpetrator;
-      //  robj["geoLocation"] = geoLocation;
-      //
-      //  return robj;
-      //});
       console.log(data);
       $scope.data = data;
       var markers = createMarkerWithOverlap($scope.data);
-      $scope.markers = markers;
+      $scope.visibleMarkers = new Array();
+      $scope.visibleMarkers = $scope.setVisibleMarkers;
+      console.log("In readCsv "+$scope.visibleMarkers)
     });
 
   };
+  $scope.visibleMarkers = new Array();
+
+  $scope.setVisibleMarkers = function() {
+    console.log("In setVisibleMarkers");
+    if($scope.markers != undefined) {
+      var data = new Array();
+      var upperLimit = $scope.paginationCurrentPage + $scope.paginationPageSize;
+      for (var i = $scope.paginationCurrentPage; i < upperLimit; i++) {
+        if ($scope.markers[i] != undefined) {
+          data.push($scope.markers[i]);
+          console.log("Inserted " + $scope.markers[i])
+        }
+      }
+      return data;
+    }
+  };
+
 
   $scope.init = function () {
-    //getCurrentPosition();
-    //getLatestNews();
-    readcsv()
+    readcsv();
+
   };
 
 
