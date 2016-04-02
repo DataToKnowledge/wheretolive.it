@@ -3,9 +3,19 @@
     <section class="post" ng-repeat="news in newsArray" id="{{news.id}}">
       <header class="entry-header row">
 
-        <div ng-show="news.imageUrl.length > 0" class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-            <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src={{news.imageUrl}}>
+        <div class="row">
+          <div  class="col-xs-2 col-sm-2 col-md-1 col-lg-1">
+            <img ng-show="news.imageUrl.length > 0" class="entry-avatar" alt="Paul Laros" height="80" width="120" src={{news.imageUrl}}>
+          </div>
+          <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+          <span ng-show="news.annotations.length > 0">| Tag Semantici:</span>
+            <span ng-repeat="ann in news.annotations | unique ">
+              <span class="label label-default topic-name">{{ann}} </span>
+            </span>
+          </div>
+
         </div>
+
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <h3 class="entry-title">
             <a href={{news.uri}} target="_blank">{{news.title}}</a>
@@ -13,16 +23,16 @@
 
           <p class="entry-meta">
             Pubblicata il <a class="entry-date">{{news.date}}</a>
-            | <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news.publisher}}</a>
+            | <a class="entry-author" href={{news.uriWebsite}} target="_blank">{{news.publisher}}</a>
             <!--span ng-show="news.keywords.length > 0">| Keywords:</span>
             <span ng-repeat="k in news.keywords | unique ">
               <span class="label label-default topic-name">{{k}} </span>
             </span-->
 
-            <span ng-show="news.annotations.length > 0">| Giustizia:</span>
+            <!--span ng-show="news.annotations.length > 0">| Giustizia:</span>
             <span ng-repeat="ann in news.annotations | unique ">
               <span class="label label-default topic-name">{{ann}} </span>
-            </span>
+            </span-->
           </p>
 
           </p>
@@ -54,9 +64,21 @@
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <div class="col-lg-6 fixed" style="padding-top: 15px;">
       <ui-gmap-google-map options="map.options" center="map.center" zoom="map.zoom" draggable="true">
-        <ui-gmap-markers models="markers" coords="'self'" doCluster=true clusterOptions="{maxZoom:13}"
-                         click="'onClicked'" options="'options'" events="markersEvents">
+        <ui-gmap-markers models="markers"
+                            coords="'self'"
+                            doCluster=true
+                            clusterOptions="{maxZoom:13}"
+                            click="'onClicked'"
+                            options="'options'"
+                            events="markersEvents">
         </ui-gmap-markers>
+        <!--ui-gmap-markers ng-if="map.showMarkers"
+                         doCluster="map.doCluster"
+                         models="searchResults.results"
+                         coords="'coords'"
+                         idkey="'key'"
+                         chunk="200"
+          ></ui-gmap-markers-->
       </ui-gmap-google-map>
     </div>
   </div>
