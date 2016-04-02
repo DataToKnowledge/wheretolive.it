@@ -19,12 +19,12 @@ angular
     'uiGmapgoogle-maps',
     'ngAutocomplete',
     'vr.directives.slider',
-    'elasticsearch',
-    'elasticui',
+    //'elasticsearch',
+    //'elasticui',
     'angular.filter',
     'angularMoment'
   ])
-  .constant('euiHost', 'http://wheretolive.it:59200')
+  //.constant('euiHost', 'http://es.datatoknowledge.it')
   .constant('angularMomentConfig', {
     preprocess: 'unix', // optional
     timezone: 'Europe/Rome' // optional

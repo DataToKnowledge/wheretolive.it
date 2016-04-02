@@ -132,12 +132,13 @@ angular.module('wheretoliveApp')
       if ($scope.position == undefined) {
 
         Search.getLastNews(paginationPageSize, from).then(function (data) {
-          $scope.newsArray = data.data.hits.hits;
-          $scope.results = data.data.hits.total;
-          console.log("News", $scope.newsArray);
+          //$scope.newsArray = data.data.hits.hits;
+          //$scope.results = data.data.hits.total;
+          //console.log("News", $scope.newsArray);
+          console.log(data);
 
-          var markers = createMarkerWithOverlap($scope.newsArray);
-          $scope.markers = markers;
+          //var markers = createMarkerWithOverlap($scope.newsArray);
+          //$scope.markers = markers;
 
 
         });
@@ -248,7 +249,7 @@ angular.module('wheretoliveApp')
       return marksRes;
     };
     $scope.init = function () {
-      getCurrentPosition();
+      //getCurrentPosition();
       getLatestNews();
     };
 
