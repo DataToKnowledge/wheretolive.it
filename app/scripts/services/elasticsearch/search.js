@@ -9,11 +9,12 @@
  */
 var app = angular.module('wheretoliveApp');
 
-app.service('Search', ['$http', 'EsParser', function ($http, EsParser) {
-//app.service('Search', ['$http', function ($http) {
+app.service('Search', ['$http', 'EsParser', '$q', function ($http, EsParser, $q) {
+
 
   var serverAddress = 'http://api.datatoknowledge.it/search/search';
-  //var serverAddress = 'http://192.168.1.8:9000/search/search';
+  //var serverAddress = 'http://api_node.datatoknowledge.it/search';
+  //var serverAddress = 'http://192.168.1.8:9000/search';
 
 
   this.getLastNews = function (size, from) {
@@ -25,6 +26,7 @@ app.service('Search', ['$http', 'EsParser', function ($http, EsParser) {
         "description",
         "date",
         "focusLocation",
+        "annotations",
         "keywords"],
       "query": {
         "match_all": {}
@@ -46,8 +48,25 @@ app.service('Search', ['$http', 'EsParser', function ($http, EsParser) {
       "request" : query
     };
 
-    return $http.post(serverAddress, request).success(function (data, status, headers, config) {
+    var defer = $q.defer();
+
+    $http.post(serverAddress, request)
+      .success(function (data, status, headers, config) {
+        var json =  EsParser.parseLastNews(data);
+       defer.resolve(json);
+    }).
+      error(function (data, status, headers, config) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        console.log("Error!!");
+        console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
+        defer.reject(data);
+      });
+      return defer.promise;
+
+    /*$http.post(serverAddress, request).success(function (data, status, headers, config) {
       var result = EsParser.parseLastNews(data);
+      console.log(result);
       return result;
     }).
       error(function (data, status, headers, config) {
@@ -55,7 +74,9 @@ app.service('Search', ['$http', 'EsParser', function ($http, EsParser) {
         // or server returns response with an error status.
         console.log("Error!!");
         console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
-      });
+        return {};
+      });*/
+
 
   };
 

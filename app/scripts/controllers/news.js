@@ -8,7 +8,7 @@
  * Controller of the wheretoliveApp
  */
 angular.module('wheretoliveApp')
-  .controller('NewsCtrl', ['$scope', 'Search', function ($scope, Search) {
+  .controller('NewsCtrl', ['$scope', 'Search', '$q', function ($scope, Search, $q) {
 
     /*
      ##############################################################
@@ -130,17 +130,15 @@ angular.module('wheretoliveApp')
     var getLatestNews = function () {
       var from = paginationPageSize * $scope.paginationCurrentPage;
       if ($scope.position == undefined) {
-
+        //$scope.newsArray = Search.getLastNews(paginationPageSize, from);
+        //console.log($scope.newsArray);
         Search.getLastNews(paginationPageSize, from).then(function (data) {
-          //$scope.newsArray = data.data.hits.hits;
-          //$scope.results = data.data.hits.total;
-          //console.log("News", $scope.newsArray);
+          $scope.newsArray = data;
           console.log(data);
+
 
           //var markers = createMarkerWithOverlap($scope.newsArray);
           //$scope.markers = markers;
-
-
         });
       } else {
 

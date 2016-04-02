@@ -1,26 +1,27 @@
 <div class="row" data-ng-init="init()">
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 scrollit">
-    <section class="post" ng-repeat="news in newsArray" id="{{news._id}}">
+    <section class="post" ng-repeat="news in newsArray" id="{{news.id}}">
       <header class="entry-header row">
-        <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-            <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
-        </div-->
+
+        <div ng-show="news.imageUrl.length > 0" class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+            <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src={{news.imageUrl}}>
+        </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <h3 class="entry-title">
-            <a href={{news._source.urlNews}} target="_blank">{{news._source.title}}</a>
+            <a href={{news.uri}} target="_blank">{{news.title}}</a>
           </h3>
 
           <p class="entry-meta">
-            Pubblicata il <a class="entry-date">{{news._source.focusDate}}</a>
-            | <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news._source.newspaper}}</a>
-            <span ng-show="news._source.crimes.length > 0">| Crimini:</span>
-            <span ng-repeat="crime in news._source.crimes | unique ">
-              <span class="label label-default topic-name">{{crime}} </span>
-            </span>
+            Pubblicata il <a class="entry-date">{{news.date}}</a>
+            | <a class="entry-author" href={{news._source.urlWebSite}} target="_blank">{{news.publisher}}</a>
+            <!--span ng-show="news.keywords.length > 0">| Keywords:</span>
+            <span ng-repeat="k in news.keywords | unique ">
+              <span class="label label-default topic-name">{{k}} </span>
+            </span-->
 
-            <span ng-show="news._source.relateds.length > 0">| Giustizia:</span>
-            <span ng-repeat="related in news._source.relateds | unique ">
-              <span class="label label-default topic-name">{{related}} </span>
+            <span ng-show="news.annotations.length > 0">| Giustizia:</span>
+            <span ng-repeat="ann in news.annotations | unique ">
+              <span class="label label-default topic-name">{{ann}} </span>
             </span>
           </p>
 
@@ -28,7 +29,7 @@
         </div>
       </header>
       <div class="entry-description">
-        <p class="text-justify">{{news._source.summary}} </p>
+        <p class="text-justify">{{news.description}} </p>
       </div>
     </section>
     <!-- /.post -->
