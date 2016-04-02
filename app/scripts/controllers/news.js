@@ -69,21 +69,32 @@ angular.module('wheretoliveApp')
      ##                         GOOGLE MAPS SETTINGS             ##
      ##############################################################
      */
-    $scope.map = {
-      center: {
-        latitude: '41.118532',
-        longitude: '16.869020'
-      },
-      options: {
-        maxZoom: 14,
-        minZoom: 8,
-        streetViewControl: false
-      },
+    //$scope.mapOptions = {
+    //  center: {
+    //    latitude: '41.118532',
+    //    longitude: '16.869020'
+    //  },
+    //  options: {
+    //    maxZoom: 14,
+    //    minZoom: 8,
+    //    streetViewControl: false
+    //  },
+    //  zoom: 8,
+    //  clusterOptions: {
+    //    maxZoom: 10
+    //  }
+    //};
+
+    var mapOptions = {
       zoom: 8,
-      clusterOptions: {
-        maxZoom: 10
-      }
+      maxZoom:16,
+      //minZoom:8,
+      streetViewControl: false,
+      center: new google.maps.LatLng(41.118532, 16.869020)
     };
+
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
 
     /*
      Restituisce la corretta posizione geografica dell'utente
@@ -134,7 +145,7 @@ angular.module('wheretoliveApp')
         //console.log($scope.newsArray);
         Search.getLastNews(paginationPageSize, from).then(function (data) {
           $scope.newsArray = data;
-          console.log(data);
+          //console.log(data);
 
 
           var markers = createMarkerWithOverlap($scope.newsArray);
@@ -145,7 +156,7 @@ angular.module('wheretoliveApp')
         Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
           $scope.newsArray = data.data.hits.hits;
           $scope.results = data.data.hits.total;
-          console.log("News", $scope.newsArray);
+          //console.log("News", $scope.newsArray);
 
           var markers = createMarkerWithOverlap($scope.newsArray);
           $scope.markers = markers;
@@ -240,11 +251,26 @@ angular.module('wheretoliveApp')
             }
 
           }else{
-            console.log("News "+i+" non ha coordinate");
+            //console.log("News "+i+" non ha coordinate");
           }
 
       }
-      return marksRes;
+      //return marksRes;
+      console.log(marksRes);
+      var markers = [];
+
+      for (var i = 0; i < marksRes.length; i++) {
+        var latLng = new google.maps.LatLng(marksRes[i].latitude, marksRes[i].longitude);
+        var marker = new google.maps.Marker({
+          position: latLng,
+          map: map,
+          title: marksRes[i].title
+        });
+
+        markers.push(marker);
+      }
+
+
     };
     $scope.init = function () {
       getCurrentPosition();
