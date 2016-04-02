@@ -8,7 +8,7 @@
  * Controller of the wheretoliveApp
  */
 angular.module('wheretoliveApp')
-  .controller('NewsCtrl', ['$scope', 'Search', '$q', function ($scope, Search, $q) {
+  .controller('NewsCtrl', ['$scope', 'Search', function ($scope, Search) {
 
     /*
      ##############################################################
@@ -137,8 +137,8 @@ angular.module('wheretoliveApp')
           console.log(data);
 
 
-          //var markers = createMarkerWithOverlap($scope.newsArray);
-          //$scope.markers = markers;
+          var markers = createMarkerWithOverlap($scope.newsArray);
+          $scope.markers = markers;
         });
       } else {
 
@@ -170,21 +170,21 @@ angular.module('wheretoliveApp')
           // 2.1 array.contains(e) inserisco un marker in posizione newLat= iLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
           //        ed aggiorno mapMarkers con newLat e newLon
           // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
-          if(jsonData[i]._source.geoLocation !=undefined) {
-            var coords = jsonData[i]._source.geoLocation.split(",");
-            var iLat = coords[0].trim();
+          if(jsonData[i].pin !=undefined) {
+            var coords = jsonData[i].pin;
+            var iLat = coords.lat;
             var mapMarkArray = mapMarkers[iLat];
-            var iLon = coords[1].trim();
+            var iLon = coords.lon;
 
             if (mapMarkArray == undefined) {
 
 
                 var newMarker = {
-                  id: jsonData[i]._id + "/" + count,
+                  id: jsonData[i].id + "/" + count,
                   latitude: iLat,
                   longitude: iLon,
                   showWindow: true,
-                  title: jsonData[i]._source.title
+                  title: jsonData[i].title
 
                 };
                 //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
@@ -198,11 +198,11 @@ angular.module('wheretoliveApp')
                 if (mapMarkers[iLat].indexOf(iLon) == -1) {
                   mapMarkArray.push(iLon);
                   var newMarker = {
-                    id: jsonData[i]._id + "/" + count,
+                    id: jsonData[i].id + "/" + count,
                     latitude: iLat,
                     longitude: iLon,
                     showWindow: true,
-                    title: jsonData[i]._source.title
+                    title: jsonData[i].title
 
                   };
                   //console.log(newMarker.latitude + '--' + newMarker.longitude);
@@ -223,11 +223,11 @@ angular.module('wheretoliveApp')
                   mapMarkers[newLat] = new Array(newLon.toString());
 
                   var newMarker = {
-                    id: jsonData[i]._id + "/" + count,
+                    id: jsonData[i].id + "/" + count,
                     latitude: newLat,
                     longitude: newLon,
                     showWindow: true,
-                    title: jsonData[i]._source.title
+                    title: jsonData[i].title
 
                   };
                   //console.log(newMarker.latitude + '--' + newMarker.longitude);
@@ -247,7 +247,7 @@ angular.module('wheretoliveApp')
       return marksRes;
     };
     $scope.init = function () {
-      //getCurrentPosition();
+      getCurrentPosition();
       getLatestNews();
     };
 
