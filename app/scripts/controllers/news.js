@@ -125,48 +125,81 @@ angular.module('wheretoliveApp')
      */
     var lastMarkerIdHighlight = "";
 
-    $scope.markersEvents = {
-      click: function (gMarker, eventName, model) {
-        var idNews = model.id.split("/")[0];
-        if (idNews != lastMarkerIdHighlight) {
-          $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
-          $("#" + idNews).addClass("highlightPost");
-          //TO DO modificare in modo da permettere uno scroll corretto.
-          $('html,body, div.scrollit').animate({scrollTop: $("#" + idNews).offset().top - 150}, 'slow');
-          lastMarkerIdHighlight = idNews;
-        }
+    var highlineNews = function(marker) {
+      var idMarker = marker.get("id");
+      if (idMarker != lastMarkerIdHighlight) {
+        $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
+        $("#" + idMarker).addClass("highlightPost");
+        //TO DO modificare in modo da permettere uno scroll corretto.
+        $('html,body, div.scrollit').animate({scrollTop: $("#" + idMarker).offset().top - 150}, 'slow');
+        lastMarkerIdHighlight = idMarker;
       }
     };
 
     var getLatestNews = function () {
       var from = paginationPageSize * $scope.paginationCurrentPage;
       if ($scope.position == undefined) {
-        //$scope.newsArray = Search.getLastNews(paginationPageSize, from);
-        //console.log($scope.newsArray);
         Search.getLastNews(paginationPageSize, from).then(function (data) {
           $scope.newsArray = data;
-          //console.log(data);
+          console.log(data);
 
+          $scope.markers = createMarkerWithOverlap($scope.newsArray);
 
-          var markers = createMarkerWithOverlap($scope.newsArray);
-          $scope.markers = markers;
         });
       } else {
 
-        Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
-          $scope.newsArray = data.data.hits.hits;
-          $scope.results = data.data.hits.total;
-          //console.log("News", $scope.newsArray);
+        //TO DO da aggiornare
+        //Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
+        //  $scope.newsArray = data.data.hits.hits;
+        //  $scope.results = data.data.hits.total;
+        //
+        //  //console.log("News",  $scope.newsArray);
+        //
+        //  var markers = createMarkerWithOverlap($scope.newsArray);
+        //  $scope.markers = markers;
+        //
+        //
+        //});
+      }
+    };
 
-          var markers = createMarkerWithOverlap($scope.newsArray);
-          $scope.markers = markers;
-
-
+    var removeMarkers = function() {
+      //if scope.markers is not empty remove markers
+      if($scope.markers!= undefined) {
+        var oldMarkers = $scope.markers;
+        oldMarkers.map(function (m) {
+          m.setMap(null);
         });
       }
     };
 
+    var addMarkersToMap = function(marksRes) {
+      var markers = [];
+
+      for (var i = 0; i < marksRes.length; i++) {
+        var latLng = new google.maps.LatLng(marksRes[i].latitude, marksRes[i].longitude);
+        var marker = new google.maps.Marker({
+          id: marksRes[i].id,
+          position: latLng,
+          map: map,
+          title: marksRes[i].title
+        });
+
+        markers.push(marker);
+      }
+
+      markers.map(function(m) {
+        m.addListener('click', function () {
+          highlineNews(m);
+        });
+      });
+
+      return markers;
+    };
+
     var createMarkerWithOverlap = function (jsonData) {
+     removeMarkers();
+
       var marksRes = new Array();
       var count = 0;
       var min = 0.99999;
@@ -176,104 +209,99 @@ angular.module('wheretoliveApp')
 
       for (var i = 0; i < jsonData.length; i++) {
 
-          //Case1: mapMarkers[iLat]==undefined => inserisco (iLat->mapCurrentNews[iLat]) in mapMarkers
-          //Case2: mapMarkers[iLat]== array perOgni e in mapCurrentNews[iLat] se:
-          // 2.1 array.contains(e) inserisco un marker in posizione newLat= iLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
-          //        ed aggiorno mapMarkers con newLat e newLon
-          // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
-          if(jsonData[i].pin !=undefined) {
-            var coords = jsonData[i].pin;
-            var iLat = coords.lat;
-            var mapMarkArray = mapMarkers[iLat];
-            var iLon = coords.lon;
+        //Case1: mapMarkers[iLat]==undefined => inserisco (iLat->mapCurrentNews[iLat]) in mapMarkers
+        //Case2: mapMarkers[iLat]== array perOgni e in mapCurrentNews[iLat] se:
+        // 2.1 array.contains(e) inserisco un marker in posizione newLat= iLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
+        //        ed aggiorno mapMarkers con newLat e newLon
+        // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
+        if(jsonData[i].pin !=undefined) {
+          var coords = jsonData[i].pin;
+          var iLat = coords.lat;
+          var mapMarkArray = mapMarkers[iLat];
+          var iLon = coords.lon;
 
-            if (mapMarkArray == undefined) {
+          if (mapMarkArray == undefined) {
 
 
-                var newMarker = {
-                  id: jsonData[i].id + "/" + count,
-                  latitude: iLat,
-                  longitude: iLon,
-                  showWindow: true,
-                  title: jsonData[i].title
+            var newMarker = {
+              id: count,
+              latitude: iLat,
+              longitude: iLon,
+              showWindow: true,
+              title: jsonData[i].title
 
-                };
-                //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
-                count++;
-                marksRes.push(newMarker);
-                mapMarkers[iLat] = new Array(iLon);
+            };
 
-            } else {
-                //case 2.2
+            //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
+            count++;
+            marksRes.push(newMarker);
+            //mapMarkers[iLat] = new Array(iLon);
+            mapMarkers[iLat] = new Array();
+            mapMarkers[iLat].push(iLon);
 
-                if (mapMarkers[iLat].indexOf(iLon) == -1) {
-                  mapMarkArray.push(iLon);
-                  var newMarker = {
-                    id: jsonData[i].id + "/" + count,
-                    latitude: iLat,
-                    longitude: iLon,
-                    showWindow: true,
-                    title: jsonData[i].title
+          } else {
+            //case 2.2
 
-                  };
-                  //console.log(newMarker.latitude + '--' + newMarker.longitude);
-                  count++;
-                  marksRes.push(newMarker);
-                  mapMarkers[iLat] = mapMarkArray;
-                  //console.log("case 2.2: " + newMarker.latitude + '--' + newMarker.longitude);
+            if (mapMarkers[iLat].indexOf(iLon) == -1) {
+              mapMarkArray.push(iLon);
+              var newMarker = {
+                id:  count,
+                latitude: iLat,
+                longitude: iLon,
+                showWindow: true,
+                title: jsonData[i].title
+              };
 
-                }
-                //case 2.1
-                else {
-                  //console.log("currentLong gia presente " + currentNewsLons[l]);
-                  var newLat = iLat * (Math.random() * (max - min) + min);
-                  while (Object.keys(mapMarkers).indexOf(newLat) != -1) {
-                    newLat = iLat * (Math.random() * (max - min) + min);
-                  }
-                  var newLon = iLon * (Math.random() * (max - min) + min);
-                  mapMarkers[newLat] = new Array(newLon.toString());
-
-                  var newMarker = {
-                    id: jsonData[i].id + "/" + count,
-                    latitude: newLat,
-                    longitude: newLon,
-                    showWindow: true,
-                    title: jsonData[i].title
-
-                  };
-                  //console.log(newMarker.latitude + '--' + newMarker.longitude);
-                  count++;
-                  marksRes.push(newMarker);
-                  //console.log("case 2.1: " + newMarker.latitude + '--' + newMarker.longitude);
-                }
-
+              //console.log(newMarker.latitude + '--' + newMarker.longitude);
+              count++;
+              marksRes.push(newMarker);
+              mapMarkers[iLat] = mapMarkArray;
+              //console.log("case 2.2: " + newMarker.latitude + '--' + newMarker.longitude);
 
             }
+            //case 2.1
+            else {
+              //console.log("currentLong gia presente " + currentNewsLons[l]);
+              var newLat = iLat * (Math.random() * (max - min) + min);
+              while (Object.keys(mapMarkers).indexOf(newLat) != -1) {
+                newLat = iLat * (Math.random() * (max - min) + min);
+              }
+              var newLon = iLon * (Math.random() * (max - min) + min);
+              //mapMarkers[newLat] = new Array(newLon.toString());
+              mapMarkers[newLat] = new Array();
+              mapMarkers[newLat].push(newLon.toString());
+              var newMarker = {
+                id: count,
+                latitude: newLat,
+                longitude: newLon,
+                showWindow: true,
+                title: jsonData[i].title
 
-          }else{
-            //console.log("News "+i+" non ha coordinate");
+              };
+
+              //console.log(newMarker.latitude + '--' + newMarker.longitude);
+              count++;
+              marksRes.push(newMarker);
+              //console.log("case 2.1: " + newMarker.latitude + '--' + newMarker.longitude);
+            }
+
+
           }
 
-      }
-      //return marksRes;
-      console.log(marksRes);
-      var markers = [];
+        }else{
+          //console.log("News "+i+" non ha coordinate");
+        }
 
-      for (var i = 0; i < marksRes.length; i++) {
-        var latLng = new google.maps.LatLng(marksRes[i].latitude, marksRes[i].longitude);
-        var marker = new google.maps.Marker({
-          position: latLng,
-          map: map,
-          title: marksRes[i].title
-        });
-
-        markers.push(marker);
       }
 
-
+    return addMarkersToMap(marksRes);
     };
+
+
+
+
     $scope.init = function () {
-      getCurrentPosition();
+      //getCurrentPosition();
       getLatestNews();
     };
 
