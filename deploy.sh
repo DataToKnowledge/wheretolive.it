@@ -19,4 +19,4 @@ cp -r deploy_repo.sh dist/ || error
 cp googlebc10d2c8fb87d102.html dist/ || error
 
 msg "run the following commands into the dist folder"
-cd dist && ./deploy_repo.sh || error
+# cd dist && ./deploy_repo.sh || error
