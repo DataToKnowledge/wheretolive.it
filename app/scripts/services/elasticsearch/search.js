@@ -18,29 +18,75 @@ app.service('Search', ['$http', 'EsParser', '$q', function ($http, EsParser, $q)
 
 
   this.getLastNews = function (size, from) {
+    //var query = {
+    //  "_source": ["publisher",
+    //    "uri",
+    //    "imageUrl",
+    //    "title",
+    //    "description",
+    //    "date",
+    //    "focusLocation",
+    //    "annotations",
+    //    "keywords"],
+    //  "query": {
+    //    "match_all": {}
+    //  },
+    //  "size": "",
+    //  "from": "",
+    //  "sort": [
+    //    {
+    //      "date": {
+    //        "order": "desc"
+    //      }
+    //    }
+    //  ]
+    //};
+
     var query = {
       "_source": ["publisher",
-        "uri",
-        "imageUrl",
-        "title",
-        "description",
-        "date",
-        "focusLocation",
-        "annotations",
-        "keywords"],
+            "uri",
+            "imageUrl",
+            "title",
+            "description",
+            "date",
+            "focusLocation",
+            "annotations",
+            "keywords"],
       "query": {
-        "match_all": {}
-      },
+        "bool": {
+          "must": [
+             {
+                 "range": {
+                    "date": {
+                          "lt" :  "now+1d/d"
+                    }
+                 }
+             },
+             {
+                 "nested": {
+                    "path": "annotations",
+                    "query": {
+                        "term": {
+                           "annotations.tags": {
+                              "value": "Crime"
+                           }
+                        }
+                    }
+                 }
+             }
+          ]
+      }
+    },
       "size": "",
       "from": "",
       "sort": [
-        {
-          "date": {
-            "order": "desc"
-          }
+      {
+        "date": {
+          "order": "desc"
         }
-      ]
-    };
+      }
+    ]
+    }
 
     query.size = size;
     query.from = from;

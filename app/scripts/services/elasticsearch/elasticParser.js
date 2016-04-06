@@ -8,7 +8,7 @@ app.factory('EsParser', function () {
 
   var getAnnotations = function(jsonAnnotations){
     var annotations = jsonAnnotations.map(function(obj){
-      return obj.surfaceForm;
+      return obj.name;
     });
     return annotations;
   };
@@ -19,15 +19,16 @@ app.factory('EsParser', function () {
 
   var getDomainURL = function(url) {
     var arr = url.split("/");
-    var res = arr[0] + "//" + arr[2]
+    var res = arr[0] + "//" + arr[2];
     return res;
   };
 
   parser.parseLastNews = function (json) {
     var array = json.hits.hits;
+    var count = 0;
     var articles = array.map(function (obj) {
       var article = {};
-      article.id = obj._id;
+      article.id = count;
       article.publisher = obj._source.publisher;
       article.uri = obj._source.uri;
       article.uriWebsite = obj._source.uri !== undefined ? getDomainURL(obj._source.uri) : undefined;
@@ -39,6 +40,7 @@ app.factory('EsParser', function () {
       article.cityName = obj._source.focusLocation!== undefined ?  obj._source.focusLocation.cityName : undefined;
       article.keywords = obj._source.keywords;
       article.annotations = obj._source.annotations !== undefined ? getAnnotations(obj._source.annotations) : undefined;
+      count = count + 1;
       return article;
     });
     return articles;

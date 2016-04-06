@@ -10,7 +10,7 @@
           <div  class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
           <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
           <span ng-show="news.annotations.length > 0">| Tag Semantici:</span>
-            <span ng-repeat="ann in news.annotations | unique ">
+            <span ng-repeat="ann in news.annotations | unique | limitTo:20">
               <span class="label label-success topic-name">{{ann}} </span>
             </span>
           </div>
@@ -63,8 +63,8 @@
     </div>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-    <div class="col-lg-6 fixed" style="padding-top: 15px;">
-      <ui-gmap-google-map options="map.options" center="map.center" zoom="map.zoom" draggable="true">
+    <div id="map" class="col-lg-6 fixed" style="padding-top: 15px;">
+      <!--ui-gmap-google-map options="map.options" center="map.center" zoom="map.zoom" draggable="true">
         <ui-gmap-markers models="markers"
                             coords="'self'"
                             doCluster=true
@@ -80,10 +80,11 @@
                          idkey="'key'"
                          chunk="200"
           ></ui-gmap-markers-->
-      </ui-gmap-google-map>
+      <!--/ui-gmap-google-map-->
     </div>
   </div>
 </div>
+
 <span id="top-link-block" class="row">
   <a href="#top" class="well well-sm"
      onclick="$('html,body, div.scrollit').animate({scrollTop:0},'slow');return false;">
