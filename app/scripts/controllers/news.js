@@ -86,11 +86,11 @@ angular.module('wheretoliveApp')
     //};
 
     var mapOptions = {
-      zoom: 8,
+      zoom: 6,
       maxZoom:16,
       //minZoom:8,
       streetViewControl: false,
-      center: new google.maps.LatLng(41.118532, 16.869020)
+      center: new google.maps.LatLng(41.018532, 14.869020)
     };
 
     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
