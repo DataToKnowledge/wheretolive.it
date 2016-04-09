@@ -9,15 +9,15 @@
  */
 var app = angular.module('wheretoliveApp');
 
-app.service('Search', ['$http', 'EsParser', '$q', function ($http, EsParser, $q) {
+app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) {
 
 
   var serverAddress = 'http://api.datatoknowledge.it/search/search';
-  //var serverAddress = 'http://api_node.datatoknowledge.it/search';
+  // var serverAddress = 'http://api_node.datatoknowledge.it/search';
   //var serverAddress = 'http://192.168.1.8:9000/search';
 
 
-  this.getLastNews = function (size, from) {
+  this.getLastNews = function(size, from) {
     //var query = {
     //  "_source": ["publisher",
     //    "uri",
@@ -44,71 +44,67 @@ app.service('Search', ['$http', 'EsParser', '$q', function ($http, EsParser, $q)
 
     var query = {
       "_source": ["publisher",
-            "uri",
-            "imageUrl",
-            "title",
-            "description",
-            "date",
-            "focusLocation",
-            "annotations",
-            "keywords"],
+        "uri",
+        "imageUrl",
+        "title",
+        "description",
+        "date",
+        "focusLocation",
+        "annotations",
+        "keywords"
+      ],
       "query": {
         "bool": {
-          "must": [
-             {
-                 "range": {
-                    "date": {
-                          "lt" :  "now+1d/d"
-                    }
-                 }
-             },
-             {
-                 "nested": {
-                    "path": "annotations",
-                    "query": {
-                        "term": {
-                           "annotations.tags": {
-                              "value": "Crime"
-                           }
-                        }
-                    }
-                 }
-             }
-          ]
-      }
-    },
+          "must": [{
+            "range": {
+              "date": {
+                "lt": "now+1d/d"
+              }
+            }
+          }, {
+            "nested": {
+              "path": "annotations",
+              "query": {
+                "term": {
+                  "annotations.tags": {
+                    "value": "Crime"
+                  }
+                }
+              }
+            }
+          }]
+        }
+      },
       "size": "",
       "from": "",
-      "sort": [
-      {
+      "sort": [{
         "date": {
           "order": "desc"
         }
-      }
-    ]
+      }]
     }
 
     query.size = size;
     query.from = from;
     var request = {
-      "request" : query
+      "request": query
     };
 
     var defer = $q.defer();
 
     $http.post(serverAddress, request)
-      .success(function (data, status, headers, config) {
-        var json =  EsParser.parseLastNews(data);
-       defer.resolve(json);
-    }).
-      error(function (data, status, headers, config) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
-        console.log("Error!!");
-        console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
-        defer.reject(data);
-      });
-      return defer.promise;
+      .success(function(data, status, headers, config) {
+        var json = EsParser.parseLastNews(data);
+        defer.resolve(json);
+      }).
+    error(function(data, status, headers, config) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      console.log("Error!!");
+      console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
+      defer.reject(data);
+    });
+    return defer.promise;
 
     /*$http.post(serverAddress, request).success(function (data, status, headers, config) {
       var result = EsParser.parseLastNews(data);

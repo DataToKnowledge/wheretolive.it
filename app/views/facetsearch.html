@@ -43,9 +43,9 @@
 
       <form ng-submit="">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="cerca in titolo, sommario e testo delle news"
+          <input type="text" class="form-control" placeholder="cerca nelle news"
                  name="srch-term" id="srch-term"
-                 eui-query="ejs.MultiMatchQuery(['title', 'summary', 'corpus'], querystring).type('most_fields').fuzziness(0.4)"
+                 eui-query="ejs.MultiMatchQuery(['title', 'description'], querystring).type('most_fields').fuzziness(0.4)"
                  ng-model="querystring" eui-enabled="querystring.length">
 
           <!--query with all the attributes-->
@@ -70,16 +70,16 @@
                   <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
               </div-->
               <h3 class="entry-title">
-                <a href={{news._source.urlNews}} target="_blank">{{news._source.title}}</a>
+                <a href={{news._source.uri}} target="_blank">{{news._source.title}}</a>
               </h3>
 
               <p class="entry-meta">
-                Pubblicata il <a class="entry-date">{{news._source.focusDate}}</a>
-                | <a class="entry-author" href={{news._source.urlWebSite}}
-                     target="_blank">{{news._source.newspaper}}</a>
+                Pubblicata il <a class="entry-date">{{news._source.date}}</a>
+                | <a class="entry-author" href={{news._source.publisher}}
+                     target="_blank">{{news._source.publisher}}</a>
             </header>
             <div class="entry-description">
-              <p class="text-justify">{{news._source.summary}} </p>
+              <p class="text-justify">{{news._source.description}} </p>
             </div>
           </div>
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">

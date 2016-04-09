@@ -8,7 +8,7 @@
  * Controller of the wheretoliveApp
  */
 angular.module('wheretoliveApp')
-  .controller('NewsCtrl', ['$scope', 'Search', function ($scope, Search) {
+  .controller('NewsCtrl', ['$scope', 'Search', function($scope, Search) {
 
     /*
      ##############################################################
@@ -20,7 +20,7 @@ angular.module('wheretoliveApp')
     var paginationPageCount = Math.ceil($scope.results / paginationPageSize) - 1;
 
 
-    $scope.paginationGetRange = function () {
+    $scope.paginationGetRange = function() {
       var rangeSize = 5;
       var ps = [];
       var start;
@@ -41,26 +41,28 @@ angular.module('wheretoliveApp')
 
     };
 
-    var paginationSetCurrentPage = function (newPage) {
+    var paginationSetCurrentPage = function(newPage) {
       //console.log("Entrato in setCurrentPage()", newPage);
       $scope.paginationCurrentPage = newPage;
     };
 
-    $scope.disablePrevPage = function () {
+    $scope.disablePrevPage = function() {
       return $scope.paginationCurrentPage === 0;
     };
 
-    $scope.disableNextPage = function () {
-      var res = ($scope.paginationCurrentPage === paginationPageCount) || ( paginationPageCount === -1);
+    $scope.disableNextPage = function() {
+      var res = ($scope.paginationCurrentPage === paginationPageCount) || (paginationPageCount === -1);
       //console.log("Disable: "+ res);
       return res;
     };
 
 
-    $scope.updateSearch = function (newPage) {
+    $scope.updateSearch = function(newPage) {
       paginationSetCurrentPage(newPage);
       getLatestNews();
-      $('html,body, div.scrollit').animate({scrollTop: 0}, 'slow')
+      $('html,body, div.scrollit').animate({
+        scrollTop: 0
+      }, 'slow')
     };
 
 
@@ -87,7 +89,7 @@ angular.module('wheretoliveApp')
 
     var mapOptions = {
       zoom: 6,
-      maxZoom:16,
+      maxZoom: 16,
       //minZoom:8,
       streetViewControl: false,
       center: new google.maps.LatLng(41.018532, 14.869020)
@@ -99,9 +101,9 @@ angular.module('wheretoliveApp')
     /*
      Restituisce la corretta posizione geografica dell'utente
      */
-    var getCurrentPosition = function () {
-      window.navigator.geolocation.getCurrentPosition(function (position) {
-        $scope.$apply(function () {
+    var getCurrentPosition = function() {
+      window.navigator.geolocation.getCurrentPosition(function(position) {
+        $scope.$apply(function() {
           //console.log('Current position', position);
           $scope.position = position;
           $scope.map = {
@@ -113,7 +115,7 @@ angular.module('wheretoliveApp')
           paginationSetCurrentPage(0);
           getLatestNews();
         });
-      }, function (error) {
+      }, function(error) {
         console.log('error get position', error);
       });
     };
@@ -131,18 +133,18 @@ angular.module('wheretoliveApp')
         $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
         $("#" + idMarker).addClass("highlightPost");
         //TO DO modificare in modo da permettere uno scroll corretto.
-        $('html,body, div.scrollit').animate({scrollTop: $("#" + idMarker).offset().top - 150}, 'slow');
+        $('html,body, div.scrollit').animate({
+          scrollTop: $("#" + idMarker).offset().top - 150
+        }, 'slow');
         lastMarkerIdHighlight = idMarker;
       }
     };
 
-    var getLatestNews = function () {
+    var getLatestNews = function() {
       var from = paginationPageSize * $scope.paginationCurrentPage;
       if ($scope.position == undefined) {
-        Search.getLastNews(paginationPageSize, from).then(function (data) {
+        Search.getLastNews(paginationPageSize, from).then(function(data) {
           $scope.newsArray = data;
-          console.log(data);
-
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
 
         });
@@ -165,9 +167,9 @@ angular.module('wheretoliveApp')
 
     var removeMarkers = function() {
       //if scope.markers is not empty remove markers
-      if($scope.markers!= undefined) {
+      if ($scope.markers != undefined) {
         var oldMarkers = $scope.markers;
-        oldMarkers.map(function (m) {
+        oldMarkers.map(function(m) {
           m.setMap(null);
         });
       }
@@ -189,7 +191,7 @@ angular.module('wheretoliveApp')
       }
 
       markers.map(function(m) {
-        m.addListener('click', function () {
+        m.addListener('click', function() {
           highlineNews(m);
         });
       });
@@ -197,8 +199,8 @@ angular.module('wheretoliveApp')
       return markers;
     };
 
-    var createMarkerWithOverlap = function (jsonData) {
-     removeMarkers();
+    var createMarkerWithOverlap = function(jsonData) {
+      removeMarkers();
 
       var marksRes = new Array();
       var count = 0;
@@ -214,7 +216,7 @@ angular.module('wheretoliveApp')
         // 2.1 array.contains(e) inserisco un marker in posizione newLat= iLat * (Math.random() * (max - min) + min), newLon = e * (Math.random() * (max - min) + min)
         //        ed aggiorno mapMarkers con newLat e newLon
         // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
-        if(jsonData[i].pin !=undefined) {
+        if (jsonData[i].pin != undefined) {
           var coords = jsonData[i].pin;
           var iLat = coords.lat;
           var mapMarkArray = mapMarkers[iLat];
@@ -245,7 +247,7 @@ angular.module('wheretoliveApp')
             if (mapMarkers[iLat].indexOf(iLon) == -1) {
               mapMarkArray.push(iLon);
               var newMarker = {
-                id:  count,
+                id: count,
                 latitude: iLat,
                 longitude: iLon,
                 showWindow: true,
@@ -288,19 +290,19 @@ angular.module('wheretoliveApp')
 
           }
 
-        }else{
+        } else {
           //console.log("News "+i+" non ha coordinate");
         }
 
       }
 
-    return addMarkersToMap(marksRes);
+      return addMarkersToMap(marksRes);
     };
 
 
 
 
-    $scope.init = function () {
+    $scope.init = function() {
       //getCurrentPosition();
       getLatestNews();
     };
