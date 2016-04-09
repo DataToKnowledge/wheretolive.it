@@ -18,39 +18,22 @@ This project is made using node.js angular.js bower.io and some other stuffs
 ### Test with docker
 
 1. create the dist folder
-    
+
     grunt build
 
 2. Install [Docker](https://www.docker.com/).
 
 3. Build an image from Dockerfile: `docker build -t="wheretolive/wtl" ./`
-   
+
 3. run the local docker
-  docker run -d -p 80:80 --name wtl wheretolive/wtl 
+  docker run -d -p 80:80 --name wtl wheretolive/wtl
 
 
 ### Deploy
 
-1. add the remote dokku branch with the name of the app dtk
-
-    git remote add dokku dokku@datatoknowledge.it:wtl
-
-2. push the local branch to the remote dokku master. Let suppose that the local branch is develop the command should be
-
-    git push dokku develop:master
-
-3. check that the given url for the app is online. Basing on the example it should be wtl.datatoknowlde.it
-
-#### Optional - setup a custom url
-
-4. in the following we set www.wheretolive.it as alias for wtl.datatoknowledge.it
-
-    ssh -t dokku@datatoknowledge.it domains:set wtl www.wheretolive.it
-
- the command accepts multiple set, but we can also set redirects
-    ssh -t dokku@datatoknowledge.it domains:redirect:set wtl wheretolive.it
-    
-
-### Dokku-alt
-
-for more documentation ceck the dokku-alt documentation
+1. run the command deplot.sh
+2. tar the dist
+3. move to the servers
+4. untar the folder and cd inside
+5. build the docker `docker build -t data2knowledge/wtl-site:1.2 .`
+6. run it `docker run -dt --name wtl-site data2knowledge/wtl-site:1.2`
