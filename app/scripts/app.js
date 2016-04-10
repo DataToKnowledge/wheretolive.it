@@ -24,7 +24,7 @@ angular
     'angular.filter',
     'angularMoment'
   ])
-  .constant('euiHost', 'http://es.datatoknowledge.it')
+  .constant('euiHost', 'http://es-data-4:9200')
   .constant('angularMomentConfig', {
     preprocess: 'unix', // optional
     timezone: 'Europe/Rome' // optional

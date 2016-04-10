@@ -72,7 +72,14 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
                 }
               }
             }
-          }]
+          }],
+          "must_not": [
+           {
+               "match": {
+                  "publisher": "Blitz quotidiano: Cronaca, Politica, Sport Gossip"
+               }
+           }
+        ]
         }
       },
       "size": "",
