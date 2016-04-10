@@ -71,21 +71,6 @@ angular.module('wheretoliveApp')
      ##                         GOOGLE MAPS SETTINGS             ##
      ##############################################################
      */
-    //$scope.mapOptions = {
-    //  center: {
-    //    latitude: '41.118532',
-    //    longitude: '16.869020'
-    //  },
-    //  options: {
-    //    maxZoom: 14,
-    //    minZoom: 8,
-    //    streetViewControl: false
-    //  },
-    //  zoom: 8,
-    //  clusterOptions: {
-    //    maxZoom: 10
-    //  }
-    //};
 
     var mapOptions = {
       zoom: 6,
@@ -113,6 +98,7 @@ angular.module('wheretoliveApp')
 
           //se esiste una posizione le ultime news verranno anche ordinate per distanza rispetto a position
           paginationSetCurrentPage(0);
+          console.log($scope.position.coords);
           getLatestNews();
         });
       }, function(error) {
@@ -150,18 +136,12 @@ angular.module('wheretoliveApp')
         });
       } else {
 
-        //TO DO da aggiornare
-        //Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
-        //  $scope.newsArray = data.data.hits.hits;
-        //  $scope.results = data.data.hits.total;
-        //
-        //  //console.log("News",  $scope.newsArray);
-        //
-        //  var markers = createMarkerWithOverlap($scope.newsArray);
-        //  $scope.markers = markers;
-        //
-        //
-        //});
+        Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
+          $scope.newsArray = data;
+          $scope.markers = createMarkerWithOverlap($scope.newsArray);
+
+
+        });
       }
     };
 
@@ -303,7 +283,7 @@ angular.module('wheretoliveApp')
 
 
     $scope.init = function() {
-      //getCurrentPosition();
+      getCurrentPosition();
       getLatestNews();
     };
 

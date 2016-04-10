@@ -11,37 +11,33 @@ var app = angular.module('wheretoliveApp');
 
 app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) {
 
-
   var serverAddress = 'http://api.datatoknowledge.it/search/search';
   // var serverAddress = 'http://api_node.datatoknowledge.it/search';
   //var serverAddress = 'http://192.168.1.8:9000/search';
 
+  var sendRequest = function(query){
+    var request = {
+      "request": query
+    };
 
-  this.getLastNews = function(size, from) {
-    //var query = {
-    //  "_source": ["publisher",
-    //    "uri",
-    //    "imageUrl",
-    //    "title",
-    //    "description",
-    //    "date",
-    //    "focusLocation",
-    //    "annotations",
-    //    "keywords"],
-    //  "query": {
-    //    "match_all": {}
-    //  },
-    //  "size": "",
-    //  "from": "",
-    //  "sort": [
-    //    {
-    //      "date": {
-    //        "order": "desc"
-    //      }
-    //    }
-    //  ]
-    //};
+    var defer = $q.defer();
+    $http.post(serverAddress, request)
+      .success(function(data, status, headers, config) {
+        var json = EsParser.parseLastNews(data);
+        defer.resolve(json);
+      }).
+      error(function(data, status, headers, config) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        console.log("Error!!");
+        console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
+        defer.reject(data);
+      });
+    return defer.promise;
+  };
 
+  this.getLastClosestNews = function (size, from, position) {
+    console.log("getLastClosestNews with positions");
     var query = {
       "_source": ["publisher",
         "uri",
@@ -74,12 +70,80 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
             }
           }],
           "must_not": [
-           {
-               "match": {
-                  "publisher": "Blitz quotidiano: Cronaca, Politica, Sport Gossip"
-               }
-           }
-        ]
+            {
+              "match": {
+                "publisher": "Blitz quotidiano: Cronaca, Politica, Sport Gossip"
+              }
+            }
+          ]
+        }
+      },
+      "size": "",
+      "from": "",
+      "sort": [
+        {
+          "_geo_distance": {
+            "pin": [],
+            "order": "asc",
+            "unit": "km",
+            "mode" : "min",
+            "distance_type" : "sloppy_arc"
+          }
+        },
+        {
+          "date": {
+            "order": "desc"
+          }
+        }]
+    };
+
+    query.size = size;
+    query.from = from;
+    query.sort[0]["_geo_distance"]["pin"][0] = position.coords.latitude;
+    query.sort[0]["_geo_distance"]["pin"][1] = position.coords.longitude;
+    return sendRequest(query);
+
+  };
+
+  this.getLastNews = function(size, from) {
+    var query = {
+      "_source": ["publisher",
+        "uri",
+        "imageUrl",
+        "title",
+        "description",
+        "date",
+        "focusLocation",
+        "annotations",
+        "keywords"
+      ],
+      "query": {
+        "bool": {
+          "must": [{
+            "range": {
+              "date": {
+                "lt": "now+1d/d"
+              }
+            }
+          }, {
+            "nested": {
+              "path": "annotations",
+              "query": {
+                "term": {
+                  "annotations.tags": {
+                    "value": "Crime"
+                  }
+                }
+              }
+            }
+          }],
+          "must_not": [
+            {
+              "match": {
+                "publisher": "Blitz quotidiano: Cronaca, Politica, Sport Gossip"
+              }
+            }
+          ]
         }
       },
       "size": "",
@@ -89,44 +153,11 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
           "order": "desc"
         }
       }]
-    }
+    };
 
     query.size = size;
     query.from = from;
-    var request = {
-      "request": query
-    };
-
-    var defer = $q.defer();
-
-    $http.post(serverAddress, request)
-      .success(function(data, status, headers, config) {
-        var json = EsParser.parseLastNews(data);
-        defer.resolve(json);
-      }).
-    error(function(data, status, headers, config) {
-      // called asynchronously if an error occurs
-      // or server returns response with an error status.
-      console.log("Error!!");
-      console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
-      defer.reject(data);
-    });
-    return defer.promise;
-
-    /*$http.post(serverAddress, request).success(function (data, status, headers, config) {
-      var result = EsParser.parseLastNews(data);
-      console.log(result);
-      return result;
-    }).
-      error(function (data, status, headers, config) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
-        console.log("Error!!");
-        console.log("****DATA:****\n" + data + "\n****STATUS****\n" + status + "\n ****HEADER****\n: " + headers + "\n ****CONFIG****\n " + JSON.stringify(config));
-        return {};
-      });*/
-
-
+    return sendRequest(query);
   };
 
   //this.searchFullText = function (queryText, size, from) {
@@ -220,55 +251,7 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
   //
   //};
   //
-  //this.getLastClosestNews = function (size, from, position) {
-  //  console.log("getLastClosestNews with positions");
-  //  var query = {
-  //    "_source": [
-  //      "newspaper",
-  //      "urlWebSite",
-  //      "urlNews",
-  //      "imageLink",
-  //      "title",
-  //      "summary",
-  //      "focusDate",
-  //      "cityName",
-  //      "crimes",
-  //      "relateds",
-  //      "geoLocation"
-  //    ],
-  //    "size": "",
-  //    "from": "",
-  //    "query": {
-  //      "match_all": {}
-  //    },
-  //    "sort": [
-  //      {
-  //        "focusDate": {
-  //          "order": "desc"
-  //        }
-  //      },
-  //      {
-  //        "_geo_distance": {
-  //          "geoLocation": [],
-  //          "order": "asc",
-  //          "unit": "km"
-  //        }
   //
-  //      }
-  //    ]
-  //  };
-  //
-  //  query.size = size;
-  //  query.from = from;
-  //  query.sort[1]["_geo_distance"]["geoLocation"][0] = position.coords.latitude;
-  //  query.sort[1]["_geo_distance"]["geoLocation"][1] = position.coords.longitude;
-  //  var stringQuery = JSON.stringify(query);
-  //  console.log(stringQuery);
-  //  return $http.post(serverAddress, stringQuery).success(function (data) {
-  //    return data;
-  //  });
-  //
-  //};
   //
   //this.searchInNLPTags = function (query, size, from) {
   //
