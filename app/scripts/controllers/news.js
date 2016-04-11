@@ -137,12 +137,9 @@ angular.module('wheretoliveApp')
 
     $scope.animateMarker  = function(id) {
       de_highlightNews();
-      console.log("last marker animated " + lastMarkerAnimated);
       if (lastMarkerAnimated != undefined && lastMarkerAnimated != id){
-        console.log(lastMarkerAnimated);
         $scope.markers[lastMarkerAnimated].setAnimation(null);
       }
-      console.log("Animate marker "+ id);
       map.setCenter($scope.markers[id].getPosition());
       map.setZoom(8);
 ;      $scope.markers[id].setAnimation(google.maps.Animation.BOUNCE);
@@ -189,7 +186,6 @@ angular.module('wheretoliveApp')
       if ($scope.markers != undefined) {
         var oldMarkers = $scope.markers;
         oldMarkers.map(function(m) {
-          console.log(m);
           m.setMap(null);
         });
       }
@@ -234,7 +230,6 @@ angular.module('wheretoliveApp')
       removeMarkers();
 
       var marksRes = new Array();
-      var count = 0;
       var min = 0.9999;
       var max = 1.0001;
 
@@ -248,7 +243,6 @@ angular.module('wheretoliveApp')
         //        ed aggiorno mapMarkers con newLat e newLon
         // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
         if (jsonData[i].pin != undefined) {
-          console.log(i);
           var coords = jsonData[i].pin;
           var iLat = coords.lat;
           var mapMarkArray = mapMarkers[iLat];
@@ -267,7 +261,6 @@ angular.module('wheretoliveApp')
             };
 
             //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
-            count++;
             marksRes.push(newMarker);
             //mapMarkers[iLat] = new Array(iLon);
             mapMarkers[iLat] = new Array();
@@ -287,7 +280,6 @@ angular.module('wheretoliveApp')
               };
 
               //console.log(newMarker.latitude + '--' + newMarker.longitude);
-              count++;
               marksRes.push(newMarker);
               mapMarkers[iLat] = mapMarkArray;
               //console.log("case 2.2: " + newMarker.latitude + '--' + newMarker.longitude);
@@ -314,7 +306,6 @@ angular.module('wheretoliveApp')
               };
 
               //console.log(newMarker.latitude + '--' + newMarker.longitude);
-              count++;
               marksRes.push(newMarker);
               //console.log("case 2.1: " + newMarker.latitude + '--' + newMarker.longitude);
             }
@@ -336,9 +327,13 @@ angular.module('wheretoliveApp')
      ##############################################################
      */
 
-    $scope.getUpperCase = function(string){
-      console.log(string.toUpperCase());
-      return string.toUpperCase();
+    /**
+     *
+     * @param string
+     * @returns {string} if string is undefined return the empty string otherwise return the string in upper case
+     */
+    $scope.getOptionCity = function(string){
+      return (string!=undefined) ? string.toUpperCase()+":" : "";
     };
 
     $scope.init = function() {

@@ -19,10 +19,7 @@
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <h3 class="entry-title">
-            <p ng-show="news.cityName != undefined">{{getUpperCase(news.cityName)}}:
-              <a ng-bind-html="news.title" href={{news.uri}} target="_blank">{{news.title}}</a>
-            </p>
-            <p ng-show="news.cityName == undefined">
+            <p>{{getOptionCity(news.cityName)}}
               <a ng-bind-html="news.title" href={{news.uri}} target="_blank">{{news.title}}</a>
             </p>
           </h3>
