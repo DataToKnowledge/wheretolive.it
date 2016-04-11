@@ -10,6 +10,7 @@
 angular.module('wheretoliveApp')
   .controller('NewsCtrl', ['$scope', 'Search', function($scope, Search) {
 
+
     /*
      ##############################################################
      ##                         PAGINATION                       ##
@@ -112,7 +113,8 @@ angular.module('wheretoliveApp')
      */
     var lastMarkerIdHighlight = "";
 
-    var highlineNews = function(marker) {
+    var highlightNews = function(marker) {
+      de_animateMarker();
       var idMarker = marker.get("id");
       if (idMarker != lastMarkerIdHighlight) {
         $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
@@ -125,12 +127,43 @@ angular.module('wheretoliveApp')
       }
     };
 
+    var de_highlightNews = function(){
+      if(lastMarkerIdHighlight != undefined)
+        $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
+    };
+
+
+    var lastMarkerAnimated ;
+
+    $scope.animateMarker  = function(id) {
+      de_highlightNews();
+      console.log("last marker animated " + lastMarkerAnimated);
+      if (lastMarkerAnimated != undefined && lastMarkerAnimated != id){
+        console.log(lastMarkerAnimated);
+        $scope.markers[lastMarkerAnimated].setAnimation(null);
+      }
+      console.log("Animate marker "+ id);
+      map.setCenter($scope.markers[id].getPosition());
+      map.setZoom(8);
+;      $scope.markers[id].setAnimation(google.maps.Animation.BOUNCE);
+      lastMarkerAnimated = id;
+    };
+
+    var de_animateMarker = function(){
+        if (lastMarkerAnimated != undefined)
+          $scope.markers[lastMarkerAnimated].setAnimation(null);
+    };
+
     var getLatestNews = function() {
       var from = paginationPageSize * $scope.paginationCurrentPage;
       if ($scope.position == undefined) {
         Search.getLastNews(paginationPageSize, from).then(function(data) {
           $scope.newsArray = data;
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
+          //for (var key in  $scope.markers) {
+          //  console.log(JSON.stringify($scope.markers[key].position));
+          //}
+          var data = $scope.markers;
 
         });
       } else {
@@ -140,10 +173,10 @@ angular.module('wheretoliveApp')
           //console.log("in getLastClosestNews "+JSON.stringify(data));
           //console.log(JSON.stringify(data));
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
-          $scope.markers.map(function(m) {
-            console.log(JSON.stringify(m.position));
-          });
-          //console.log($scope.markers);
+          //for (var key in  $scope.markers) {
+          //  console.log(JSON.stringify($scope.markers[key].position));
+          //}
+          console.log($scope.markers);
 
 
         });
@@ -152,14 +185,21 @@ angular.module('wheretoliveApp')
 
     var removeMarkers = function() {
       //if scope.markers is not empty remove markers
+      //console.log($scope.markers);
       if ($scope.markers != undefined) {
         var oldMarkers = $scope.markers;
         oldMarkers.map(function(m) {
+          console.log(m);
           m.setMap(null);
         });
       }
     };
 
+    /**
+     *
+     * @param marksRes
+     * @returns a dictionary having as key the marker's id and as value the marker
+     */
     var addMarkersToMap = function(marksRes) {
       var markers = [];
 
@@ -175,22 +215,28 @@ angular.module('wheretoliveApp')
         markers.push(marker);
       }
 
+      var mapMarkers = [];
       markers.map(function(m) {
+        mapMarkers[m.id] = m;
         m.addListener('click', function() {
-          highlineNews(m);
+          highlightNews(m);
         });
       });
 
-      return markers;
+      return mapMarkers;
     };
 
+    /**
+     * return a dictionary where key = id news and value = marker associated to the news
+     * @param jsonData
+     */
     var createMarkerWithOverlap = function(jsonData) {
       removeMarkers();
 
       var marksRes = new Array();
       var count = 0;
-      var min = 0.99999;
-      var max = 1.00001;
+      var min = 0.9999;
+      var max = 1.0001;
 
       var mapMarkers = {};
 
@@ -202,6 +248,7 @@ angular.module('wheretoliveApp')
         //        ed aggiorno mapMarkers con newLat e newLon
         // 2.2 !array.contains(e) aggiorno mapMarkers[iLat], aggiungendo e
         if (jsonData[i].pin != undefined) {
+          console.log(i);
           var coords = jsonData[i].pin;
           var iLat = coords.lat;
           var mapMarkArray = mapMarkers[iLat];
@@ -211,7 +258,7 @@ angular.module('wheretoliveApp')
 
 
             var newMarker = {
-              id: count,
+              id: i,
               latitude: iLat,
               longitude: iLon,
               showWindow: true,
@@ -232,7 +279,7 @@ angular.module('wheretoliveApp')
             if (mapMarkers[iLat].indexOf(iLon) == -1) {
               mapMarkArray.push(iLon);
               var newMarker = {
-                id: count,
+                id: i,
                 latitude: iLat,
                 longitude: iLon,
                 showWindow: true,
@@ -258,7 +305,7 @@ angular.module('wheretoliveApp')
               mapMarkers[newLat] = new Array();
               mapMarkers[newLat].push(newLon.toString());
               var newMarker = {
-                id: count,
+                id: i,
                 latitude: newLat,
                 longitude: newLon,
                 showWindow: true,
@@ -280,12 +327,19 @@ angular.module('wheretoliveApp')
         }
 
       }
-
       return addMarkersToMap(marksRes);
     };
 
+    /*
+     ##############################################################
+     ##                     UTIL                                 ##
+     ##############################################################
+     */
 
-
+    $scope.getUpperCase = function(string){
+      console.log(string.toUpperCase());
+      return string.toUpperCase();
+    };
 
     $scope.init = function() {
       getCurrentPosition();
