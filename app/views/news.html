@@ -19,7 +19,7 @@
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <h3 class="entry-title">
-            <a href={{news.uri}} target="_blank">{{news.title}}</a>
+            <a ng-bind-html="news.title" href={{news.uri}} target="_blank">{{news.title}}</a>
           </h3>
 
           <p class="entry-meta">
@@ -40,7 +40,7 @@
         </div>
       </header>
       <div class="entry-description">
-        <p class="text-justify">{{news.description}} </p>
+        <p ng-bind-html="news.description" class="text-justify">{{news.description}} </p>
       </div>
     </section>
     <!-- /.post -->

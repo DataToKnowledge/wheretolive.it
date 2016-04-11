@@ -23,6 +23,7 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
     var defer = $q.defer();
     $http.post(serverAddress, request)
       .success(function(data, status, headers, config) {
+        //console.log(data);
         var json = EsParser.parseLastNews(data);
         defer.resolve(json);
       }).
@@ -37,7 +38,7 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
   };
 
   this.getLastClosestNews = function (size, from, position) {
-    console.log("getLastClosestNews with positions");
+
     var query = {
       "_source": ["publisher",
         "uri",
@@ -101,6 +102,7 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
     query.from = from;
     query.sort[0]["_geo_distance"]["pin"][0] = position.coords.latitude;
     query.sort[0]["_geo_distance"]["pin"][1] = position.coords.longitude;
+
     return sendRequest(query);
 
   };

@@ -98,7 +98,6 @@ angular.module('wheretoliveApp')
 
           //se esiste una posizione le ultime news verranno anche ordinate per distanza rispetto a position
           paginationSetCurrentPage(0);
-          console.log($scope.position.coords);
           getLatestNews();
         });
       }, function(error) {
@@ -138,7 +137,13 @@ angular.module('wheretoliveApp')
 
         Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
           $scope.newsArray = data;
+          //console.log("in getLastClosestNews "+JSON.stringify(data));
+          //console.log(JSON.stringify(data));
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
+          $scope.markers.map(function(m) {
+            console.log(JSON.stringify(m.position));
+          });
+          //console.log($scope.markers);
 
 
         });
