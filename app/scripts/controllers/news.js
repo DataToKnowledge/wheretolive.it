@@ -167,22 +167,13 @@ angular.module('wheretoliveApp')
 
         Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
           $scope.newsArray = data;
-          //console.log("in getLastClosestNews "+JSON.stringify(data));
-          //console.log(JSON.stringify(data));
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
-          //for (var key in  $scope.markers) {
-          //  console.log(JSON.stringify($scope.markers[key].position));
-          //}
-          console.log($scope.markers);
-
-
         });
       }
     };
 
     var removeMarkers = function() {
       //if scope.markers is not empty remove markers
-      //console.log($scope.markers);
       if ($scope.markers != undefined) {
         var oldMarkers = $scope.markers;
         oldMarkers.map(function(m) {

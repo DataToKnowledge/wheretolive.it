@@ -24,6 +24,8 @@ app.factory('EsParser', function () {
   };
 
   parser.parseLastNews = function (json) {
+    if(json.hits== undefined)
+      console.log(json);
     var array = json.hits.hits;
     var count = 0;
     var articles = array.map(function (obj) {
