@@ -84,7 +84,8 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
       "sort": [
         {
           "_geo_distance": {
-            "pin": [],
+            "pin": {
+            },
             "order": "asc",
             "unit": "km",
             "mode" : "min",
@@ -100,8 +101,8 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
 
     query.size = size;
     query.from = from;
-    query.sort[0]["_geo_distance"]["pin"][0] = position.coords.latitude;
-    query.sort[0]["_geo_distance"]["pin"][1] = position.coords.longitude;
+    query.sort[0]["_geo_distance"]["pin"]["lat"] = position.coords.latitude;
+    query.sort[0]["_geo_distance"]["pin"]["lon"] = position.coords.longitude;
 
     return sendRequest(query);
 
