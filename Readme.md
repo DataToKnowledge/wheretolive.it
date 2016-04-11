@@ -35,5 +35,5 @@ This project is made using node.js angular.js bower.io and some other stuffs
 2. tar the dist
 3. move to the servers
 4. untar the folder and cd inside
-5. build the docker `docker build -t data2knowledge/wtl-site:1.2 .`
-6. run it `docker run -dt --name wtl-site data2knowledge/wtl-site:1.2`
+5. build the docker `docker build -t data2knowledge/wtl-site:1.3.0 .`
+6. run it `docker run -dt --name wtl-site data2knowledge/wtl-site:1.3.0`
