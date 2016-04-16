@@ -1,13 +1,13 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 ">
     <div class="panel panel-default">
-      <div class="panel-heading">Filtra per Crimine</div>
+      <div class="panel-heading">Filtra per Tag semantici</div>
       <div class="panel-body">
-        <eui-checklist field="'crimes'" size="15"></eui-checklist>
+        <eui-checklist field="'keywords'" size="15"></eui-checklist>
       </div>
     </div>
 
-    <div class="panel panel-default">
+    <!--div class="panel panel-default">
       <div class="panel-heading">Filtra per Giustizia</div>
       <div class="panel-body">
         <eui-checklist field="'relateds'" size="15"></eui-checklist>
@@ -33,7 +33,7 @@
       <div class="panel-body">
         <eui-checklist field="'organizations'" size="15"></eui-checklist>
       </div>
-    </div>
+    </div-->
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -62,7 +62,7 @@
 
 
     <div class="row">
-      <section class="post" ng-repeat="news in indexVM.results.hits.hits" id="{{news._id}}">
+      <section  ng-show="indexVM.loaded" class="post" ng-repeat="news in indexVM.results.hits.hits" id="{{news._id}}">
         <div class="row">
           <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
             <header class="entry-header">
@@ -123,6 +123,13 @@
         </div>
       </section>
       <eui-simple-paging></eui-simple-paging>
+      <div ng-show="indexVM.loading" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 post text-center">
+        <div class="spinner">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

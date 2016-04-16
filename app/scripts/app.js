@@ -20,11 +20,13 @@ angular
     'ngAutocomplete',
     'vr.directives.slider',
     //'elasticsearch',
-    //'elasticui',
+    'elasticui',
     'angular.filter',
     'angularMoment'
   ])
- // .constant('euiHost', 'http://es-data-4:9200')
+  .constant('euiHost', 'http://api.datatoknowledge.it/search/search') // ACTION: change to cluster address
+  .constant('euiUser', '')
+  .constant('euiPassword', '')
   .constant('angularMomentConfig', {
     preprocess: 'unix', // optional
     timezone: 'Europe/Rome' // optional
