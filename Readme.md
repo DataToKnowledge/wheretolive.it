@@ -5,6 +5,21 @@ This project is made using node.js angular.js bower.io and some other stuffs
 
 ## Usage
 
+**Clone this project with referenced [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)**
+```bash
+git clone git@github.com:DataToKnowledge/wheretolive.it.git
+cd wheretolive.it
+```
+**Init submodule**
+
+```bash
+cd wtlElasticUI
+npm install
+grunt typescript:dist 
+grunt uglify
+```
+
+
 ### Test local
 
 1. npm install
