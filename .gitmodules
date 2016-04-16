@@ -1,0 +1,3 @@
+[submodule "wtlElasticUI"]
+	path = wtlElasticUI
+	url = git@github.com:DataToKnowledge/wtlElasticUI.git
