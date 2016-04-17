@@ -310,7 +310,7 @@ module.exports = function (grunt) {
             cwd: 'wtlElasticUI',
             expand: true,
             dest: '<%= yeoman.dist %>',
-            src: [
+            src: [ 
               'dist/elasticui.min.js'
             ]
           },
