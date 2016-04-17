@@ -38,7 +38,7 @@ app.factory('EsParser', function () {
       article.title = obj._source.title;
       article.description = obj._source.description;
       article.date = obj._source.date !== undefined ? getDate(obj._source.date) : undefined;
-      article.pin = obj._source.focusLocation!== undefined ?  obj._source.focusLocation.pin : undefined;
+      article.pin = obj._source.pin;
       article.cityName = obj._source.focusLocation!== undefined ?  obj._source.focusLocation.cityName : undefined;
       article.keywords = obj._source.keywords;
       article.annotations = obj._source.annotations !== undefined ? getAnnotations(obj._source.annotations) : undefined;

@@ -111,7 +111,7 @@ angular.module('wheretoliveApp')
      ##                     HIGHLIGHT NEWS SETTING               ##
      ##############################################################
      */
-    var lastMarkerIdHighlight = "";
+    var lastMarkerIdHighlight = -1;
 
     var highlightNews = function(marker) {
       de_animateMarker();
@@ -152,21 +152,25 @@ angular.module('wheretoliveApp')
     };
 
     var getLatestNews = function() {
+      console.log("prova");
       var from = paginationPageSize * $scope.paginationCurrentPage;
       if ($scope.position == undefined) {
         Search.getLastNews(paginationPageSize, from).then(function(data) {
           $scope.newsArray = data;
+          console.log("mah",$scope.newsArray);
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
           //for (var key in  $scope.markers) {
           //  console.log(JSON.stringify($scope.markers[key].position));
           //}
-          var data = $scope.markers;
+
+
 
         });
       } else {
 
         Search.getLastClosestNews(paginationPageSize, from, $scope.position).then(function (data) {
           $scope.newsArray = data;
+          console.log("mah",$scope.newsArray);
           $scope.markers = createMarkerWithOverlap($scope.newsArray);
         });
       }

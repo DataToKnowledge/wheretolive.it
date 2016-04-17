@@ -3,6 +3,9 @@ dist
 .sass-cache
 bower_components
 
+#submodules
+wtlElasticUI
+
 # Logs
 logs
 *.log
