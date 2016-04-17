@@ -305,7 +305,16 @@ module.exports = function (grunt) {
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
-        files: [{
+        files: [
+          {
+            cwd: 'wtlElasticUI',
+            expand: true,
+            dest: '<%= yeoman.dist %>',
+            src: [
+              'dist/elasticui.min.js'
+            ]
+          },
+          {
           expand: true,
           dot: true,
           cwd: '<%= yeoman.app %>',
@@ -319,8 +328,7 @@ module.exports = function (grunt) {
             'fonts/*',
             'styles/fonts/*',
             'styles/*',
-            'data/*',
-
+            'data/*'
           ]
         }, {
           expand: true,
