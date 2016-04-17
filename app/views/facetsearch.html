@@ -1,23 +1,23 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 ">
     <div class="panel panel-default">
-      <div class="panel-heading">Filtra per Tag semantici</div>
-      <div class="panel-body">
-        <eui-checklist field="'keywords'" size="15"></eui-checklist>
-      </div>
-    </div>
-
-    <!--div class="panel panel-default">
       <div class="panel-heading">Filtra per Giustizia</div>
       <div class="panel-body">
-        <eui-checklist field="'relateds'" size="15"></eui-checklist>
+        <eui-checklist field="'crimes'" size="20"></eui-checklist>
       </div>
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">Filtra per Provincia</div>
+      <div class="panel-heading">Filtra per Tag semantici</div>
       <div class="panel-body">
-        <eui-singleselect field="'provinceName'" size="5"></eui-singleselect>
+        <eui-checklist field="'semanticNames'" size="10"></eui-checklist>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Filtra per Regione</div>
+      <div class="panel-body">
+        <eui-singleselect field="'regionName'" size="5"></eui-singleselect>
       </div>
     </div>
 
@@ -29,11 +29,11 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">Filtra per Organizzazioni</div>
+      <div class="panel-heading">Filtra per Categorie</div>
       <div class="panel-body">
-        <eui-checklist field="'organizations'" size="15"></eui-checklist>
+        <eui-checklist field="'categories.lower'" size="15"></eui-checklist>
       </div>
-    </div-->
+    </div>
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -45,7 +45,7 @@
         <div class="input-group">
           <input type="text" class="form-control" placeholder="cerca nelle news"
                  name="srch-term" id="srch-term"
-                 eui-query="ejs.MultiMatchQuery(['title', 'description'], querystring).type('most_fields').fuzziness(0.4)"
+                 eui-query="ejs.MultiMatchQuery(['title', 'description', 'semanticNames'], querystring).type('most_fields').fuzziness(0.4)"
                  ng-model="querystring" eui-enabled="querystring.length">
 
           <!--query with all the attributes-->
@@ -74,7 +74,7 @@
               </h3>
 
               <p class="entry-meta">
-                Pubblicata il <a class="entry-date">{{news._source.date}}</a>
+                Pubblicata il <a class="entry-date">{{news._source.date | date:'dd/MM/yyyy HH:mm'}}</a>
                 | <a class="entry-author" href={{news._source.publisher}}
                      target="_blank">{{news._source.publisher}}</a>
             </header>
