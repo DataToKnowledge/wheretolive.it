@@ -40,15 +40,19 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
   this.getLastClosestNews = function (size, from, position) {
 
     var query = {
-      "_source": ["publisher",
+      "_source": [
+        "publisher",
         "uri",
         "imageUrl",
         "title",
         "description",
         "date",
-        "focusLocation",
         "annotations",
-        "keywords"
+        "keywords",
+        "pin",
+        "cityName",
+        "provinceName",
+        "regionName"
       ],
       "query": {
         "bool": {
@@ -110,15 +114,19 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
 
   this.getLastNews = function(size, from) {
     var query = {
-      "_source": ["publisher",
+      "_source": [
+        "publisher",
         "uri",
         "imageUrl",
         "title",
         "description",
         "date",
-        "focusLocation",
         "annotations",
-        "keywords"
+        "keywords",
+        "pin",
+        "cityName",
+        "provinceName",
+        "regionName"
       ],
       "query": {
         "bool": {
