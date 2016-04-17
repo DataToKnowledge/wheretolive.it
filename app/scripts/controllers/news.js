@@ -328,7 +328,7 @@ angular.module('wheretoliveApp')
      * @returns {string} if string is undefined return the empty string otherwise return the string in upper case
      */
     $scope.getOptionCity = function(string){
-      return (string!=undefined) ? string.toUpperCase()+":" : "";
+      return (string!== "") ? string.toUpperCase() +":" : "";
     };
 
     $scope.init = function() {
