@@ -9,19 +9,25 @@
  */
 var app = angular.module('wheretoliveApp');
 
-app.filter('offset', function() {
-  return function(input, offset) {
-    //start = parseInt(start, 10);
-    //return input.slice(start);
-    console.log(input.slice(+offset));
-    return (input instanceof Array)
-      ? input.slice(+offset)
-      : input
+app.filter('startFrom', function () {
+  return function (input, start) {
+    if (input) {
+      start = +start;
+      return input.slice(start);
+    }
+    return [];
   };
 });
 
 app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope, Search, $http) {
 
+// pagination controls
+  $scope.currentPage = 1;
+  $scope.entryLimit = 10; // items per page
+  $scope.numberOfPages = function(dataSize, entryLimit)
+  {
+    return Math.ceil(dataSize / entryLimit);
+  };
 
   var readcsv = function() {
     $http.get('/data/datiProcura.csv').then(function(response){
@@ -61,76 +67,19 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
       }
 
       $scope.data = data;
-      $scope.markers = createMarkerWithOverlap($scope.data);
-      $scope.results = data.length;
-
+      $scope.totalItems = $scope.data.length;
+      var filteredData = $scope.data.slice($scope.currentPage, $scope.entryLimit + 1);
+      $scope.markers = createMarkerWithOverlap(filteredData);
     });
 
   };
 
-  /*
-   ##############################################################
-   ##                         PAGINATION                       ##
-   ##############################################################
-   */
-  $scope.paginationCurrentPage = 0;
-  var paginationPageSize = 10;
-  //$scope.paginationPageCount = (Math.ceil($scope.results / paginationPageSize) - 1);
-  $scope.paginationPageCount = Math.ceil($scope.results / paginationPageSize) - 1;
+  $scope.incrementPaginationAndMarker = function() {
+    $scope.currentPage = $scope.currentPage + 1;
+    removeMarkers();
+    var filteredData = $scope.data.slice($scope.currentPage, $scope.entryLimit + 1);
+    $scope.markers = createMarkerWithOverlap(filteredData);
 
-  $scope.prova = 0;
-
-  $scope.paginationGetRange = function () {
-    var rangeSize = 5;
-    var ps = [];
-    var start;
-    start = $scope.paginationCurrentPage;
-
-    var pippo = (Math.ceil($scope.results / paginationPageSize) -1);
-    console.log("paginationPageCount "+ $scope.paginationPageCount);
-    console.log("paginationPageSize " + paginationPageSize);
-    console.log("scopeRes "+ $scope.results);
-    console.log("pippo " + pippo);
-    //  console.log("In range(): pageCount(): "+this.pageCount());
-    if (start > $scope.paginationPageCount - rangeSize) {
-      start = $scope.paginationPageCount - rangeSize + 1;
-    }
-
-    for (var i = start; i < start + rangeSize; i++) {
-
-      if (i >= 0)
-        ps.push(i);
-
-    }
-    console.log("In pagination ps "+ps);
-    return ps;
-
-  };
-
-  var paginationSetCurrentPage = function (newPage) {
-    //console.log("Entrato in setCurrentPage()", newPage);
-    console.log("new page " + newPage );
-    $scope.paginationCurrentPage = newPage;
-  };
-
-  $scope.disablePrevPage = function () {
-    return $scope.paginationCurrentPage === 0;
-  };
-
-  $scope.disableNextPage = function () {
-    var res = ($scope.paginationCurrentPage === $scope.paginationPageCount) || ( $scope.paginationPageCount === -1);
-    //console.log("Disable: "+ res);
-    return res;
-  };
-
-
-  $scope.updateSearch = function (newPage) {
-    paginationSetCurrentPage(newPage);
-    $('html,body, div.scrollit').animate({scrollTop: 0}, 'slow')
-  };
-
-  $scope.getOffset = function(currentPage) {
-    return currentPage * $scope.paginationPageSize;
   };
 
 
@@ -149,38 +98,20 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
 
   var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-  /*
-   ##############################################################
-   ##                     HIGHLIGHT NEWS SETTING               ##
-   ##############################################################
+  /**
+   * return a dictionary where key = id news and value = marker associated to the news
+   * @param jsonData
    */
-  var lastMarkerIdHighlight = "";
-
-  var highlineNews = function(marker) {
-    var idMarker = marker.get("id");
-    if (idMarker != lastMarkerIdHighlight) {
-      $("#" + lastMarkerIdHighlight).removeClass("highlightPost");
-      $("#" + idMarker).addClass("highlightPost");
-      //TO DO modificare in modo da permettere uno scroll corretto.
-      $('html,body, div.scrollit').animate({
-        scrollTop: $("#" + idMarker).offset().top - 150
-      }, 'slow');
-      lastMarkerIdHighlight = idMarker;
-    }
-  };
-
   var createMarkerWithOverlap = function(jsonData) {
-    //removeMarkers();
+    removeMarkers();
 
-    console.log("In createMarkerWithOverlap");
     var marksRes = new Array();
-    var count = 0;
-    var min = 0.99999;
-    var max = 1.00001;
+    var min = 0.9999;
+    var max = 1.0001;
 
     var mapMarkers = {};
 
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < jsonData.length; i++) {
 
       //Case1: mapMarkers[iLat]==undefined => inserisco (iLat->mapCurrentNews[iLat]) in mapMarkers
       //Case2: mapMarkers[iLat]== array perOgni e in mapCurrentNews[iLat] se:
@@ -197,7 +128,7 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
 
 
           var newMarker = {
-            id: count,
+            id: i,
             latitude: iLat,
             longitude: iLon,
             showWindow: true,
@@ -206,7 +137,6 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
           };
 
           //console.log("case 1: " + newMarker.latitude + '--' + newMarker.longitude);
-          count++;
           marksRes.push(newMarker);
           //mapMarkers[iLat] = new Array(iLon);
           mapMarkers[iLat] = new Array();
@@ -218,7 +148,7 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
           if (mapMarkers[iLat].indexOf(iLon) == -1) {
             mapMarkArray.push(iLon);
             var newMarker = {
-              id: count,
+              id: i,
               latitude: iLat,
               longitude: iLon,
               showWindow: true,
@@ -226,7 +156,6 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
             };
 
             //console.log(newMarker.latitude + '--' + newMarker.longitude);
-            count++;
             marksRes.push(newMarker);
             mapMarkers[iLat] = mapMarkArray;
             //console.log("case 2.2: " + newMarker.latitude + '--' + newMarker.longitude);
@@ -244,7 +173,7 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
             mapMarkers[newLat] = new Array();
             mapMarkers[newLat].push(newLon.toString());
             var newMarker = {
-              id: count,
+              id: i,
               latitude: newLat,
               longitude: newLon,
               showWindow: true,
@@ -253,7 +182,6 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
             };
 
             //console.log(newMarker.latitude + '--' + newMarker.longitude);
-            count++;
             marksRes.push(newMarker);
             //console.log("case 2.1: " + newMarker.latitude + '--' + newMarker.longitude);
           }
@@ -266,30 +194,10 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
       }
 
     }
-
-    console.log(marksRes);
     return addMarkersToMap(marksRes);
   };
 
 
-
-
-
-
-  //var setVisibleMarkers = function() {
-  //  console.log("In setVisibleMarkers");
-  //  if($scope.markers != undefined) {
-  //    var data = new Array();
-  //    var upperLimit = $scope.paginationCurrentPage + $scope.paginationPageSize;
-  //    for (var i = $scope.paginationCurrentPage; i < upperLimit; i++) {
-  //      if ($scope.markers[i] != undefined) {
-  //        data.push($scope.markers[i]);
-  //        console.log("Inserted " + $scope.markers[i])
-  //      }
-  //    }
-  //    return data;
-  //  }
-  //};
 
   var removeMarkers = function() {
     //if scope.markers is not empty remove markers
@@ -303,8 +211,7 @@ app.controller('NewsProcuraCtrl', ['$scope', 'Search', '$http',function ($scope,
 
   var addMarkersToMap = function(marksRes) {
     var markers = [];
-
-    console.log(marksRes[i]);
+    //console.log(marksRes[i]);
     for (var i = 0; i < marksRes.length; i++) {
       var latLng = new google.maps.LatLng(marksRes[i].latitude, marksRes[i].longitude);
       var marker = new google.maps.Marker({

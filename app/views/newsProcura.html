@@ -1,14 +1,15 @@
 <div class="row" data-ng-init="init()">
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 scrollit">
     <!--section class="post" ng-repeat='dataProcura in data |offset:paginationCurrentPage |limitTo:10'-->
-    <section class="post" ng-repeat="dataProcura in data |offset:paginationCurrentPage*paginationPageSize  |limitTo:10" id="{{dataProcura._id}}">
+    <!--section class="post" ng-repeat="dataProcura in data |offset:paginationCurrentPage*paginationPageSize  |limitTo:10" id="{{dataProcura._id}}"-->
+    <section class="post" ng-repeat="dataProcura in data  | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit" id="{{dataProcura._id}}">
       <header class="entry-header row">
         <!--div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
             <img class="entry-avatar" alt="Paul Laros" height="80" width="120" src="http://www.wheretolive.it/images/corrieresalentino.jpg">
         </div-->
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <h3 class="entry-title">
-            <a target="_blank">{{dataProcura._id}} {{dataProcura.title}}</a>
+            <a target="_blank">{{dataProcura.title}}</a>
           </h3>
 
           <p class="entry-meta">
@@ -48,21 +49,24 @@
     <!-- /.post -->
 
 
+    <!-- Pagination-->
+
     <div class="row row-centered">
       <ul class="pagination">
-        <li ng-hide="disablePrevPage()">
-          <a href ng-click="updateSearch((paginationCurrentPage-1))">&laquo;</a>
+        <li ng-hide="currentPage == 1">
+          <a href ng-click="currentPage=currentPage-1">&laquo;</a>
         </li>
-        <li ng-repeat="n in paginationGetRange()"
-            ng-class="{active: n == paginationCurrentPage}">
-          <a href ng-click="updateSearch(n)">{{n+1}}</a>
+        <li> <span>Page {{currentPage}} of {{numberOfPages(data.length, entryLimit)}}</span>
         </li>
-        <li ng-hide="disableNextPage()">
-          <a href ng-click="updateSearch((paginationCurrentPage+1))">&raquo;</a>
+        <li ng-hide="currentPage == numberOfPages(data.length, entryLimit)">
+          <a href ng-click="incrementPaginationAndMarker()">&raquo;</a>
         </li>
 
       </ul>
     </div>
+
+
+
   </div>
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <div id="map" class="col-lg-6 fixed" style="padding-top: 15px;">
