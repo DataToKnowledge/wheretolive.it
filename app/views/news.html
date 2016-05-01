@@ -25,7 +25,7 @@
           </h3>
 
           <p class="entry-meta">
-            Pubblicata il <a class="entry-date">{{news.date | date:'dd/MM/yyyy HH:mm'}}</a>
+            Pubblicata il <a class="entry-date">{{news.date | date:'dd/MM/yyyy'}}</a>
             | <a class="entry-author" href={{news.uriWebsite}} target="_blank">{{news.publisher}}</a>
             |  <a href ng-show="news.pin != undefined" ng-click="animateMarker(news.id)"><img src="images/markers/map-marker-small-th.png" width="30"></a>
             <!--span ng-show="news.keywords.length > 0">| Keywords:</span>
