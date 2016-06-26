@@ -24,7 +24,7 @@ angular
     'angular.filter',
     'angularMoment'
   ])
-  .constant('euiHost', 'http://api.datatoknowledge.it/search/search') // ACTION: change to cluster address
+  .constant('euiHost', 'http://api.wheretolive.it/search/search') // ACTION: change to cluster address
   .constant('euiUser', '')
   .constant('euiPassword', '')
   .constant('angularMomentConfig', {
