@@ -307,11 +307,12 @@ module.exports = function (grunt) {
       dist: {
         files: [
           {
-            cwd: 'wtlElasticUI',
+            // cwd: 'wtlElasticUI',
+            cwd: '<%= yeoman.app %>',
             expand: true,
             dest: '<%= yeoman.dist %>',
-            src: [ 
-              'dist/elasticui.min.js'
+            src: [
+              'wtlElasticUI/dist/elasticui.min.js'
             ]
           },
           {

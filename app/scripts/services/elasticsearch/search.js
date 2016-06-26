@@ -11,7 +11,7 @@ var app = angular.module('wheretoliveApp');
 
 app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) {
 
-  var serverAddress = 'http://api.datatoknowledge.it/search/search';
+  var serverAddress = 'http://api.wheretolive.it/search/search';
   // var serverAddress = 'http://api_node.datatoknowledge.it/search';
   //var serverAddress = 'http://192.168.1.8:9000/search';
 
