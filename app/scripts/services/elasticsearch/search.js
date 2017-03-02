@@ -63,17 +63,6 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
                 "lt": "now+1d/d"
               }
             }
-          }, {
-            "nested": {
-              "path": "annotations",
-              "query": {
-                "term": {
-                  "annotations.tags": {
-                    "value": "Crime"
-                  }
-                }
-              }
-            }
           }],
           "must_not": [
             {
@@ -135,17 +124,6 @@ app.service('Search', ['$http', 'EsParser', '$q', function($http, EsParser, $q) 
             "range": {
               "date": {
                 "lt": "now+1d/d"
-              }
-            }
-          }, {
-            "nested": {
-              "path": "annotations",
-              "query": {
-                "term": {
-                  "annotations.tags": {
-                    "value": "Crime"
-                  }
-                }
               }
             }
           }],
