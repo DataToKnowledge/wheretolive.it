@@ -51,4 +51,4 @@ grunt uglify
 3. move to the servers
 4. untar the folder and cd inside
 5. build the docker `docker build -t data2knowledge/wtl-site:1.3.2 .`
-6. run it `docker rm -f wtl-site && docker run -dt --name wtl-site data2knowledge/wtl-site:1.3.2`
+6. run it `docker rm -f wtl-site && docker run -dt -p 80:80 --name wtl-site data2knowledge/wtl-site:1.3.2`
